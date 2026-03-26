@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head> ```html <!-- PWA манифест --> 
+<link rel="manifest" href="manifest.json"> 
+<meta name="theme-color" content="#c8a96e"> 
+<meta name="apple-mobile-web-app-capable" content="yes"> 
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> 
+<meta name="apple-mobile-web-app-title" content="УДПЩ №1"> ``` И создай файл `manifest.json` рядом: ```json { "name": "УДПЩ №1 · ERP · Богатырь",
+"short_name": "УДПЩ №1", 
+"start_url": "/", 
+"display": "standalone", 
+"background_color": "#07070f", 
+"theme_color": "#c8a96e", 
+"icons": [
+ { 
+  "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'>
+  <rect fill='%23c8a96e' width='512' height='512' rx='128'/>
+  <text x='256' y='320' text-anchor='middle' font-size='200' fill='%23000'>𐰀
+  </text></svg>", 
+  "sizes": "512x512", 
+  "type": "image/svg+xml" 
+} 
+]
+ } ```
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>УДПЩ №1 · ERP · Богатырь</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Geologica:wght@300;400;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#07070f;--s1:#0d0d1a;--s2:#121224;--s3:#181830;--s4:#1e1e3a;
+  --border:#1e1e38;--border2:#252548;
+  --gold:#c8a96e;--gold2:#e8c98e;
+  --text:#d8d8f0;--muted:#5858a0;
+  --green:#3db87a;--red:#e05555;--amber:#e09040;--blue:#4488ff;--purple:#8866ff;
+  --r:10px;--mono:'JetBrains Mono',monospace;
+}
+html,body{height:100%;overflow:hidden;font-family:'Geologica',sans-serif;background:var(--bg);color:var(--text)}
+body{display:flex;flex-direction:column}
+
+.hdr{padding:9px 14px;background:var(--s1);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.logo{display:flex;align-items:center;gap:9px}
+.rune{font-size:22px;animation:glow 4s ease-in-out infinite}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 4px rgba(200,169,110,.3))}50%{filter:drop-shadow(0 0 14px rgba(200,169,110,.7))}}
+.logo-t{font-size:14px;font-weight:700;color:var(--gold)}
+.logo-s{font-size:10px;color:var(--muted);margin-top:1px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 2s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.htime{font-size:11px;color:var(--muted);font-family:var(--mono)}
+
+.nav{display:flex;overflow-x:auto;scrollbar-width:none;background:var(--s1);border-bottom:1px solid var(--border);flex-shrink:0}
+.nav::-webkit-scrollbar{display:none}
+.ni{padding:9px 11px;font-size:11px;color:var(--muted);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:.15s;font-weight:600;flex-shrink:0}
+.ni:hover{color:var(--text)}.ni.on{color:var(--gold);border-bottom-color:var(--gold)}
+.nbadge{background:var(--red);color:#fff;border-radius:8px;padding:1px 5px;font-size:9px;font-weight:700;margin-left:3px}
+
+.wrap{flex:1;overflow-y:auto;padding:10px}
+.wrap::-webkit-scrollbar{width:3px}
+.wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.page{display:none}.page.on{display:block}
+
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden}
+.ch{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:var(--s2);flex-wrap:wrap;gap:6px}
+.cht{font-size:13px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:7px}
+.cb{padding:12px 14px}
+
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px}
+.metric{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:10px 11px;position:relative;overflow:hidden;cursor:default}
+.metric::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.3}
+.mlbl{font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.mval{font-size:18px;font-weight:700;color:var(--gold);font-family:var(--mono);line-height:1}
+.msub{font-size:10px;color:var(--muted);margin-top:2px}
+
+.fg{display:grid;gap:8px;margin-bottom:8px}
+.c2{grid-template-columns:1fr 1fr}.c3{grid-template-columns:1fr 1fr 1fr}.c4{grid-template-columns:repeat(4,1fr)}.c5{grid-template-columns:repeat(5,1fr)}
+.fld label{font-size:11px;color:var(--muted);display:block;margin-bottom:4px;font-weight:600;letter-spacing:.3px}
+input,select,textarea{width:100%;padding:7px 9px;background:var(--s2);border:1px solid var(--border);border-radius:7px;color:var(--text);font-size:13px;font-family:'Geologica',sans-serif;transition:.15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold)}
+textarea{resize:vertical;min-height:48px}
+select option{background:var(--s2)}
+
+.btn{padding:7px 13px;border-radius:7px;font-size:12px;cursor:pointer;border:1px solid var(--border);background:var(--s3);color:var(--text);font-family:'Geologica',sans-serif;transition:.15s;font-weight:600}
+.btn:hover{background:var(--s4)}
+.btn-g{background:var(--gold);color:#000;border-color:var(--gold)}.btn-g:hover{background:var(--gold2)}
+.btn-r{background:rgba(224,85,85,.12);color:var(--red);border-color:rgba(224,85,85,.25)}
+.btn-b{background:rgba(68,136,255,.12);color:var(--blue);border-color:rgba(68,136,255,.25)}
+.btn-row{display:flex;gap:7px;justify-content:flex-end;margin-top:8px;flex-wrap:wrap}
+
+.tw{overflow-x:auto;border-radius:7px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:400px}
+th{padding:7px 8px;text-align:left;color:var(--muted);border-bottom:1px solid var(--border);font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;background:var(--s2);white-space:nowrap}
+td{padding:7px 8px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(200,169,110,.03)}
+
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:700}
+.bg{background:rgba(61,184,122,.13);color:var(--green)}.br{background:rgba(224,85,85,.13);color:var(--red)}
+.ba{background:rgba(224,144,64,.13);color:var(--amber)}.bb{background:rgba(68,136,255,.13);color:var(--blue)}
+.bgold{background:rgba(200,169,110,.13);color:var(--gold)}.bp{background:rgba(136,102,255,.13);color:var(--purple)}
+
+.sr{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
+.sr:last-child{border-bottom:none}
+.sv{color:var(--gold);font-weight:700;font-family:var(--mono)}
+
+.div{height:1px;background:var(--border);margin:10px 0}
+.sec{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;margin-top:4px}
+.info{background:rgba(68,136,255,.1);border:1px solid rgba(68,136,255,.3);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--blue);margin-bottom:10px}
+
+/* Табель */
+.sch-wrap{overflow-x:auto}
+.sch-t{border-collapse:collapse;font-size:10px;width:100%;min-width:500px}
+.sch-t th,.sch-t td{padding:4px 2px;text-align:center;border:1px solid var(--border)}
+.sch-t th{background:var(--s2);color:var(--muted);font-size:9px;font-weight:700}
+.sch-name{text-align:left!important;padding-left:9px!important;white-space:nowrap;min-width:110px;position:sticky;left:0;background:var(--s1);z-index:1;font-size:11px}
+.sch-name.hh{background:var(--s2)!important}
+.role-row{background:rgba(200,169,110,.05)!important}
+.role-lbl{text-align:left!important;padding-left:9px!important;font-size:10px;font-weight:700;color:var(--gold);position:sticky;left:0;z-index:1}
+.d1{background:rgba(61,184,122,.2)!important;color:var(--green);font-weight:700;cursor:pointer}
+.d2{background:rgba(68,136,255,.2)!important;color:var(--blue);font-weight:700;cursor:pointer}
+.dv{background:rgba(200,169,110,.06)!important;color:var(--muted);cursor:pointer}
+.db{background:rgba(224,85,85,.15)!important;color:var(--red);font-weight:700;cursor:pointer}
+.do{background:rgba(224,144,64,.1)!important;color:var(--amber);cursor:pointer}
+.dwe{background:rgba(136,102,255,.05)!important;cursor:pointer}
+
+/* Staff cards */
+.staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:8px}
+.sc{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;position:relative}
+.sc.excl{opacity:.55;border-style:dashed}
+.sc-name{font-size:13px;font-weight:700;margin-bottom:3px}
+.sc-role{font-size:11px;margin-bottom:2px}
+.sc-tab{font-size:10px;color:var(--muted);font-family:var(--mono);margin-bottom:6px}
+.sc-acts{display:flex;gap:5px}
+.sca{flex:1;padding:4px;border-radius:5px;font-size:10px;cursor:pointer;border:1px solid var(--border);background:var(--s3);color:var(--muted);text-align:center;font-family:'Geologica',sans-serif;font-weight:600;transition:.15s}
+.sca:hover{color:var(--text);background:var(--s4)}
+.sca-ex{color:var(--amber);border-color:rgba(224,144,64,.3)}
+.sca-in{color:var(--green);border-color:rgba(61,184,122,.3)}
+.sca-rm{color:var(--red);border-color:rgba(224,85,85,.3)}
+
+/* Periode */
+.pb{padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer;border:1px solid var(--border);background:var(--s3);color:var(--muted);font-weight:600;transition:.15s}
+.pb:hover,.pb.on{background:var(--gold);color:#000;border-color:var(--gold)}
+
+/* AI */
+.ai-chat{min-height:80px;max-height:180px;overflow-y:auto;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:8px;font-size:12px;line-height:1.6}
+.ai-row{display:flex;gap:7px}
+.ai-row input{flex:1}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.chip{padding:3px 9px;background:var(--s2);border:1px solid var(--border);border-radius:20px;font-size:11px;color:var(--muted);cursor:pointer;transition:.15s}
+.chip:hover{border-color:var(--gold);color:var(--gold)}
+
+/* Modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;padding:12px}
+.modal-bg.show{display:flex}
+.modal{background:var(--s1);border:1px solid var(--border2);border-radius:14px;padding:16px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.modal-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.modal-t{font-size:14px;font-weight:700;color:var(--gold)}
+.xbtn{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1}
+
+/* Progress bar */
+.pbar{height:6px;background:var(--s3);border-radius:3px;overflow:hidden;margin-top:4px}
+.pfill{height:100%;border-radius:3px;transition:.5s}
+
+.ftr{text-align:center;padding:6px;font-size:10px;color:var(--muted);font-family:var(--mono);border-top:1px solid var(--border);flex-shrink:0}
+.notify{position:fixed;bottom:16px;right:12px;background:var(--s3);border:1px solid var(--gold);border-radius:8px;padding:9px 13px;font-size:12px;color:var(--gold);z-index:300;transform:translateX(200px);transition:.3s;font-weight:600}
+.notify.show{transform:translateX(0)}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="logo">
+    <span class="rune">𐰀</span>
+    <div>
+      <div class="logo-t">УДПЩ №1 · ERP · Богатырь</div>
+      <div class="logo-s">ТОО Богатырь Комир · Ахметов А.К.</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="dot"></div>
+    <div class="htime" id="htime"></div>
+  </div>
+</div>
+
+<div class="nav">
+  <div class="ni on" onclick="go('dash',this)">📊 Сводка</div>
+  <div class="ni" onclick="go('narad',this)">📋 Наряд</div>
+  <div class="ni" onclick="go('prod',this)">⚙️ Производство</div>
+  <div class="ni" onclick="go('ship',this)">🚛 Отгрузка</div>
+  <div class="ni" onclick="go('sklad',this)">📦 Склад / ЛЗК</div>
+  <div class="ni" onclick="go('water',this)">💧 Водоотлив</div>
+  <div class="ni" onclick="go('eco',this)">🌿 Экология</div>
+  <div class="ni" onclick="go('sched',this)">📅 Табель</div>
+  <div class="ni" onclick="go('staff',this)">👷 Персонал</div>
+  <div class="ni" onclick="go('equip',this)">🔧 Ремонт</div>
+  <div class="ni" onclick="go('orders',this)">📋 Заявки<span class="nbadge" id="ob">0</span></div>
+  <div class="ni" onclick="go('safety',this)">🪖 Безопасность</div>
+  <div class="ni" onclick="go('mark',this)">🗺️ Маркшейдерия</div>
+  <div class="ni" onclick="go('report',this)">📄 Отчёты</div>
+  <div class="ni" onclick="go('bulk',this)">📥 Загрузка</div>
+  <div class="ni" onclick="go('ai',this)">🧠 Core AI</div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══ СВОДКА ═══ -->
+<div class="page on" id="p-dash">
+  <div class="metrics">
+    <div class="metric"><div class="mlbl">Остаток 10×80</div><div class="mval" id="d-s10">—</div><div class="msub">м³</div></div>
+    <div class="metric"><div class="mlbl">Остаток 25×60</div><div class="mval" id="d-s25">—</div><div class="msub">м³</div></div>
+    <div class="metric"><div class="mlbl">Отсев</div><div class="mval" id="d-sot">—</div><div class="msub">м³</div></div>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="mlbl">Добыто (камень)</div><div class="mval" id="d-kam">—</div><div class="msub">м³ месяц</div></div>
+    <div class="metric"><div class="mlbl">Отгружено</div><div class="mval" id="d-ship" style="color:var(--green)">—</div><div class="msub">м³ месяц</div></div>
+    <div class="metric"><div class="mlbl">План выполнен</div><div class="mval" id="d-plan">—</div><div class="msub">%</div></div>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="mlbl">Водоотлив</div><div class="mval" id="d-water">—</div><div class="msub">м³ месяц</div></div>
+    <div class="metric"><div class="mlbl">Ремонт</div><div class="mval" id="d-repair" style="color:var(--amber)">0</div><div class="msub">единиц</div></div>
+    <div class="metric"><div class="mlbl">Заявки</div><div class="mval" id="d-ord" style="color:var(--red)">0</div><div class="msub">открыто</div></div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="cht">📋 Данные за <span id="dash-dt" style="color:var(--muted);font-weight:400;font-size:11px;margin-left:5px"></span></div></div>
+    <div class="cb" id="dash-body"><div style="color:var(--muted);text-align:center;padding:14px;font-size:12px">Нет данных за сегодня</div></div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="cht">⚡ Последние события</div></div>
+    <div class="cb" id="dash-ev"><div style="color:var(--muted);text-align:center;padding:12px;font-size:12px">Нет событий</div></div>
+  </div>
+</div>
+
+<!-- ═══ НАРЯД ═══ -->
+<div class="page" id="p-narad">
+  <div class="card">
+    <div class="ch"><div class="cht">📋 Наряд на смену (п.3.13 Положения)</div></div>
+    <div class="cb">
+      <div class="fg c3">
+        <div class="fld"><label>Дата</label><input type="date" id="nr-date"></div>
+        <div class="fld"><label>Смена</label><select id="nr-shift"><option value="1">1 смена (08:30–20:30)</option><option value="2">2 смена (20:30–08:30)</option></select></div>
+        <div class="fld"><label>Мастер горный</label><select id="nr-master"></select></div>
+      </div>
+      <div class="sec">ПЛАН</div>
+      <div class="fg c4">
+        <div class="fld"><label>10×80, м³</label><input type="number" id="nr-p10" placeholder="500"></div>
+        <div class="fld"><label>25×60, м³</label><input type="number" id="nr-p25" placeholder="0"></div>
+        <div class="fld"><label>Экскаватор 1</label><input type="text" id="nr-ex1" value="ЭКГ-4.6Б №3287"></div>
+        <div class="fld"><label>Экскаватор 2</label><input type="text" id="nr-ex2" value="ЭКГ-5А №3259"></div>
+      </div>
+      <div class="sec">ФАКТ</div>
+      <div class="fg c4">
+        <div class="fld"><label>10×80 факт</label><input type="number" id="nr-f10" placeholder="0"></div>
+        <div class="fld"><label>25×60 факт</label><input type="number" id="nr-f25" placeholder="0"></div>
+        <div class="fld"><label>Отсев верх</label><input type="number" id="nr-ot1" placeholder="12.4" step="0.1"></div>
+        <div class="fld"><label>Отсев низ</label><input type="number" id="nr-ot2" placeholder="8.6" step="0.1"></div>
+      </div>
+      <div class="fg c3">
+        <div class="fld"><label>ПДСУ</label><select id="nr-pdsu"><option>ПДСУ-200 №1</option><option>ПДСУ-200 №2</option><option>Оба</option></select></div>
+        <div class="fld"><label>Линии</label><input type="text" id="nr-lines" placeholder="87+59+2л"></div>
+        <div class="fld"><label>Фидеры</label><input type="text" id="nr-feed" placeholder="ф5150, ф5155"></div>
+      </div>
+      <div class="fld"><label>Причина невыполнения / примечание</label><textarea id="nr-note" placeholder="простой 2л — замена ленты конвейера №5..."></textarea></div>
+      <div class="btn-row"><button class="btn btn-g" onclick="saveNarad()">Сохранить наряд</button></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="cht">📊 Нарядный журнал</div></div>
+    <div class="cb"><div class="tw"><table><thead><tr><th>Дата</th><th>Смена</th><th>Мастер</th><th>План</th><th>Факт</th><th>%</th><th>ПДСУ</th><th>Причина</th><th></th></tr></thead><tbody id="narad-list"></tbody></table></div></div>
+  </div>
+</div>
+
+<!-- ═══ ПРОИЗВОДСТВО ═══ -->
+<div class="page" id="p-prod">
+  <div class="card">
+    <div class="ch"><div class="cht">⚙️ Данные производства</div></div>
+    <div class="cb">
+      <div class="fg c3">
+        <div class="fld"><label>Дата</label><input type="date" id="p-date"></div>
+        <div class="fld"><label>ПДСУ</label><select id="p-pdsu"><option>ПДСУ-200 №1</option><option>ПДСУ-200 №2</option><option>Оба</option></select></div>
+        <div class="fld"><label>Часов работы</label><input type="number" id="p-hrs" placeholder="12" step="0.5"></div>
+      </div>
+      <div class="fg c4">
+        <div class="fld"><label>10×80 факт, м³</label><input type="number" id="p-s10" placeholder="0"></div>
+        <div class="fld"><label>25×60 факт, м³</label><input type="number" id="p-s25" placeholder="0"></div>
+        <div class="fld"><label>Отсев верх</label><input type="number" id="p-ot1" placeholder="12.4" step="0.1"></div>
+        <div class="fld"><label>Отсев низ</label><input type="number" id="p-ot2" placeholder="8.6" step="0.1"></div>
+      </div>
+      <div class="fg c4">
+        <div class="fld"><label>Камень разрыхл., м³</label><input type="number" id="p-kam-r" placeholder="0"></div>
+        <div class="fld"><label>Камень в целике, м³</label><input type="number" id="p-kam-c" placeholder="0"></div>
+        <div class="fld"><label>Вскрыша в целике, м³</label><input type="number" id="p-vsk" placeholder="0"></div>
+        <div class="fld"><label>Экскаваторы</label><input type="text" id="p-excav" placeholder="3287 на камне, 3259 на вскрыше"></div>
+      </div>
+      <div class="fg c2">
+        <div class="fld"><label>Линии / конвейеры</label><input type="text" id="p-lines" placeholder="87+59+2л"></div>
+        <div class="fld"><label>Мастер смены</label><select id="p-master"></select></div>
+      </div>
+      <div class="fld"><label>Примечание / простои</label><textarea id="p-notes" placeholder="ПДСУ-200 №1 простой 21ч — демонтаж м/барабана СМД-108..."></textarea></div>
+      <div class="btn-row"><button class="btn btn-g" onclick="saveProd()">Сохранить</button></div>
+    </div>
+  </div>
+  <!-- Суточная сводка -->
+  <div class="card">
+    <div class="ch"><div class="cht">📊 Суточная сводка</div>
+      <div style="display:flex;gap:6px"><input type="date" id="daily-d" style="padding:4px 7px;font-size:11px;width:130px"><button class="btn" style="padding:4px 9px" onclick="showDaily()">▶</button></div>
+    </div>
+    <div class="cb" id="daily-body"><div style="color:var(--muted);font-size:12px;text-align:center;padding:12px">Выбери дату</div></div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="cht">📋 История производства</div></div>
+    <div class="cb"><div class="tw"><table><thead><tr><th>Дата</th><th>ПДСУ</th><th>Ч</th><th>10×80</th><th>25×60</th><th>Камень</th><th>Вскрыша</th><th>Мастер</th><th></th></tr></thead><tbody id="prod-list"></tbody></table></div></div>
+  </div>
+</div>
+
+<!-- ═══ ОТГРУЗКА ═══ -->
+<div class="page" id="p-ship">
+  <div class="card">
+    <div class="ch"><div class="cht">🚛 Добавить отгрузку</div></div>
+    <div class="cb">
+      <div class="fg c4">
+        <div class="fld"><label>Дата / Число</label><input type="date" id="sh-date"></div>
+        <div class="fld"><label>Фракция</label><select id="sh-frac"><option>10×80</option><option>25×60</option><option>5×20</option><option>Отсев</option><option>Вскрыша</option></select></div>
+        <div class="fld"><label>Объём, м³</label><input type="number" id="sh-vol" placeholder="854"></div>
+        <div class="fld"><label>Участок</label><select id="sh-uch"><option>Западный</option><option>Восточный</option><option>Оба</option></select></div>
+      </div>
+      <div class="fg c4">
+        <div class="fld"><label>Получатель</label>
+          <select id="sh-dest">
+            <option>Разрез Богатырь</option><option>БПТУ</option><option>Автобаза</option>
+            <option>Коммерческая дирекция</option><option>Дирекция по КС</option>
+            <option>Дирекция по С и РУ</option><option>Касимов К</option><option>Прочие</option>
+          </select>
+        </div>
+        <div class="fld"><label>Вид отгрузки</label><select id="sh-type"><option>Реализация</option><option>Собственные нужды</option><option>Внутренний перевод</option></select></div>
+        <div class="fld"><label>Транспорт</label><input type="text" id="sh-trans" placeholder="Шахман 01, Хова"></div>
+        <div class="fld"><label>Примечание</label><input type="text" id="sh-note" placeholder=""></div>
+      </div>
+      <div class="btn-row"><button class="btn btn-g" onclick="saveShip()">Добавить</button></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="cht">📊 История отгрузок</div></div>
+    <div class="cb"><div class="tw"><table><thead><tr><th>Дата</th><th>Фракция</th><th>Объём</th><th>Участок</th><th>Получатель</th><th>Вид</th><th>Транспорт</th><th></th></tr></thead><tbody id="ship-list"></tbody></table></div></div>
+  </div>
+</div>
+
+<!-- ═══ СКЛАД / ЛЗК ═══ -->
+<div class="page" id="p-sklad">
+  <div class="card">
+    <div class="ch"><div class="cht">📦 Остатки на складе</div></div>
+    <div class="cb">
+      <div class="fg c3">
+        <div class="fld"><label>Дата</label><input type="date" id="sk-date"></div>
+        <div class="fld"><label>Вид</label><select id="sk-type"><option>Остаток на начало</option><option>Остаток на конец</option><option>Акт остатка</option></select></div>
+        <div class="fld"><label>Подписал</label><input type="text" id="sk-sign" placeholder="Ахметов А.К."></div>
+      </div>
+      <div class="fg c4">
+        <div class="fld"><label>10×80, м³</label><input type="number" id="sk-s10" placeholder="0"></div>
+        <div class="fld"><label>25×60, м³</label><input type="number" id="sk-s25" placeholder="0"></div>
+        <div class="fld"><label>Отсев, м³</label><input type="number" id="sk-sot" placeholder="0"></div>
+        <div class="fld"><label>Итого, м³</label><input type="number" id="sk-total" placeholder="0"></div>
+      </div>
+      <div class="btn-row"><button class="btn btn-g" onclick="saveSklad()">Сохранить</button></div>
+    </div>
+  </div>
+  <!-- ЛЗК -->
+  <div class="card">
+    <div class="ch"><div class="cht">📋 ЛЗК — Лимитно-заборная карта</div></div>
+    <div class="cb">
+      <div class="fg c3">
+        <div class="fld"><label>Месяц / Год</label><input type="month" id="lzk-month"></div>
+        <div class="fld"><label>Склад</label><select id="lzk-sklad"><option>Склад РБ</option><option>Склад БПТУ</option></select></div>
+        <div class="fld"><label>№ карты</label><input type="text" id="lzk-num" placeholder="001"></div>
+      </div>
+      <div class="fg c4">
+        <div class="fld"><label>Материал</label><input type="text" id="lzk-mat" placeholder="Масло И-20А"></div>
+        <div class="fld"><label>Ед.изм</label><input type="text" id="lzk-unit" placeholder="кг"></div>
+        <div class="fld"><label>Лимит</label><input type="number" id="lzk-lim" placeholder="0"></div>
+        <div class="fld"><label>Отпущено</label><input type="number" id="lzk-out" placeholder="0"></div>
+      </div>
+      <div class="btn-row"><button class="btn btn-g" onclick="saveLZK()">Добавить запись ЛЗК</button></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="cht">📋 Журнал ЛЗК</div></div>
+    <div class="cb"><div class="tw"><table><thead><tr><th>Месяц</th><th>Склад</th><th>Карта №</th><th>Материал</th><th>Ед</th><th>Лимит</th><th>Отпущено</th><th>Остаток</th><th></th></tr></thead><tbody id="lzk-list"></tbody></table></div></div>
+  </div>
+</div>
+
+<!-- ═══ ВОДООТЛИВ ═══ -->
+<div class="page" id="p-water">
+  <div class="card">
+    <div class="ch"><div class="cht">💧 Журнал водоотлива (К-100/60, 22кВт)</div></div>
+    <div class="cb">
+      <div class="fg c4">
+        <div class="fld"><label>Дата</label><input type="date" id="w-date"></div>
+        <div class="fld"><label>Расходомер — начало</label><input type="number" id="w-start" placeholder="0" step="0.1"></div>
+        <div class="fld"><label>Расходомер — конец</label><input type="number" id="w-end" placeholder="0" step="0.1"></div>
+        <div class="fld"><label>Разница</label><input type="number" id="w-diff" placeholder="авто" readonly style="color:var(--muted)"></div>
+      </div>
+      <div class="fg c4">
+        <div class="fld"><label>Время работы, ч</label><input type="number" id="w-hrs" placeholder="0" step="0.5"></div>
+        <div class="fld"><label>Коэф. поправки</label><input type="number" id="w-koef" placeholder="1.0" step="0.01"></div>
+        <div class="fld"><label>Объём забора, м³</label><input type="number" id="w-vol" placeholder="0"></div>
+        <div class="fld"><label>Фидер</label><input type="text" id="w-fid" placeholder="ф5155"></div>
+      </div>
+      <div class="fg c2">
+        <div class="fld"><label>ФИО ответственного</label><input type="text" id="w-who" placeholder="Хакимов И.Р."></div>
+        <div class="fld"><label>Насос</label><select id="w-pump"><option>Ближний К-100/60</option><option>Дальний К-100/60</option><option>Оба</option></select></div>
+      </div>
+      <div class="btn-row"><button class="btn btn-g" onclick="saveWater()">Записать</button></div>
+    </div>
+  </div>
+  <!-- Справка -->
+  <div class="card">
+    <div class="ch"><div class="cht">📄 Справка по откачке воды</div>
+      <div style="display:flex;gap:6px">
+        <select id="w-rep-month" style="padding:4px 8px;font-size:11px"></select>
+        <button class="btn btn-g" style="padding:4px 9px" onclick="genWaterReport()">Сформировать</button>
+      </div>
+    </div>
+    <div class="cb" id="water-report"><div style="color:var(--muted);font-size:12px">Выбери месяц</div></div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="cht">📋 Журнал насосной</div></div>
+    <div class="cb"><div class="tw"><table><thead><tr><th>Дата</th><th>Насос</th><th>Расх.нач</th><th>Расх.кон</th><th>Разница</th><th>Часов</th><th>Коэф</th><th>Объём м³</th><th>ФИО</th><th></th></tr></thead><tbody id="water-list"></tbody></table></div></div>
+  </div>
+</div>
+
+<!-- ═══ ЭКОЛОГИЯ ═══ -->
+<div class="page" id="p-eco">
+  <div class="card">
+    <div class="ch"><div class="cht">🌿 Экологический отчёт</div></div>
+    <div class="cb">
+      <div class="fg c3">
+        <div class="fld"><label>Период (месяц/год)</label><input type="month" id="eco-month"></div>
+        <div class="fld"><label>ДСУ-200 №01, часов</label><input type="number" id="eco-dsu1" placeholder="0"></div>
+        <div class="fld"><label>ДСУ-200 №02, часов</label><input type="number" id="eco-dsu2" placeholder="0"></div>
+      </div>
+      <div class="fg c4">
+        <div class="fld"><label>Камень разрыхл., м³</label><input type="number" id="eco-kr" placeholder="0"></div>
+        <div class="fld"><label>Камень в целике, м³</label><input type="number" id="eco-kc" placeholder="0"></div>
+        <div class="fld"><label>Отсев, м³</label><input type="number" id="eco-ot" placeholder="0"></div>
+        <div class="fld"><label>Вскрыша в целике, м³</label><input type="number" id="eco-vsk" placeholder="0"></div>
+      </div>
+      <div class="btn-row"><button class="btn btn-g" onclick="saveEco()">Сохранить</button></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="cht">📋 История экологических отчётов</div></div>
+    <div class="cb"><div class="tw"><table><thead><tr><th>Период</th><th>ДСУ-01 ч</th><th>ДСУ-02 ч</th><th>Камень раз.</th><th>Камень цел.</th><th>Отсев</th><th>Вскрыша</th><th></th></tr></thead><tbody id="eco-list"></tbody></table></div></div>
+  </div>
+</div>
+
+<!-- ═══ ТАБЕЛЬ ═══ -->
+<div class="page" id="p-sched">
+  <div class="card">
+    <div class="ch">
+      <div class="cht">📅 Табель <span id="sched-ttl" style="color:var(--muted);font-weight:400;font-size:11px;margin-left:5px"></span></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-b" onclick="openAutoModal()">🤖 Автографик</button>
+        <button class="btn" onclick="exportSchedCsv()">📤 CSV</button>
+      </div>
+    </div>
+    <div class="cb">
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+        <button class="pb on" id="pb-cur" onclick="setPer('cur',this)">Текущий месяц</button>
+        <button class="pb" id="pb-next" onclick="setPer('next',this)">Следующий</button>
+        <button class="pb" id="pb-cust" onclick="setPer('cust',this)">Выбрать</button>
+      </div>
+      <div id="cust-period" style="display:none;margin-bottom:8px">
+        <div class="fg c2">
+          <div class="fld"><label>С</label><input type="date" id="per-from"></div>
+          <div class="fld"><label>По</label><input type="date" id="per-to"></div>
+        </div>
+        <button class="btn btn-g" onclick="applyCust()">Применить</button>
+      </div>
+      <div class="fg c3">
+        <div class="fld"><label>Норма смен</label><input type="number" id="sched-norm" value="13" oninput="saveNorm()"></div>
+        <div class="fld"><label>Фильтр</label><select id="role-filter" onchange="renderSched()"><option value="">Все роли</option><option>Мастер горный</option><option>Машинист экскаватора</option><option>Машинист ДПА</option></select></div>
+        <div class="fld" style="display:flex;align-items:flex-end"><button class="btn btn-g" style="width:100%" onclick="renderSched()">Показать</button></div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px">
+        <span class="badge bg">1 — 1я смена</span><span class="badge bb">2 — 2я смена</span>
+        <span class="badge" style="background:var(--s3);color:var(--muted)">В — выходной</span>
+        <span class="badge br">Б — больничный</span><span class="badge ba">О — отпуск</span>
+        <span style="font-size:11px;color:var(--muted);font-style:italic;margin-left:4px">💡 Клик по ячейке</span>
+      </div>
+      <div class="sch-wrap" id="sched-grid"><div style="color:var(--muted);text-align:center;padding:20px;font-size:12px">Нажми "Показать"</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="cht">✏️ Быстрая запись на период</div></div>
+    <div class="cb">
+      <div class="fg c4">
+        <div class="fld"><label>Сотрудник</label><select id="q-who"></select></div>
+        <div class="fld"><label>С</label><input type="date" id="q-from"></div>
+        <div class="fld"><label>По</label><input type="date" id="q-to"></div>
+        <div class="fld"><label>Тип</label><select id="q-type"><option value="1">1 смена</option><option value="2">2 смена</option><option value="В">Выходной</option><option value="Б">Больничный</option><option value="О">Отпуск</option></select></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-r" onclick="clearRange()">Снять</button>
+        <button class="btn btn-g" onclick="applyRange()">Применить</button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="cht">📊 Итоги по сотрудникам</div></div>
+    <div class="cb"><div class="tw"><table><thead><tr><th>Сотрудник</th><th>Роль</th><th>1 смен</th><th>2 смен</th><th>Б/л</th><th>Отп</th><th>Часов</th><th>Норма</th><th>Статус</th></tr></thead><tbody id="sched-sum"></tbody></table></div></div>
+  </div>
+</div>
+
+<!-- ═══ ПЕРСОНАЛ ═══ -->
+<div class="page" id="p-staff">
+  <div class="card">
+    <div class="ch"><div class="cht">➕ Добавить сотрудника</div><button class="btn btn-b" onclick="loadDefaultStaff()">📋 Загрузить список</button></div>
+    <div class="cb">
+      <div class="fg c4">
+        <div class="fld"><label>ФИО</label><input type="text" id="sf-name" placeholder="Иванов И.И."></div>
+        <div class="fld"><label>Роль</label><select id="sf-role"><option>Мастер горный</option><option>Машинист экскаватора</option><option>Машинист ДПА</option><option>Электромеханик</option><option>Начальник участка</option></select></div>
+        <div class="fld"><label>Таб. №</label><input type="text" id="sf-tab" placeholder="12345"></div>
+        <div class="fld" style="display:flex;align-items:flex-end"><button class="btn btn-g" style="width:100%" onclick="addStaff()">Добавить</button></div>
+      </div>
+    </div>
+  </div>
+  <!-- Инструктажи -->
+  <div class="card">
+    <div class="ch"><div class="cht">🪖 Инструктаж (п.3.20-3.21)</div></div>
+    <div class="cb">
+      <div class="fg c3">
+        <div class="fld"><label>Вид</label><select id="in-type"><option>Первичный</option><option>Повторный</option><option>Внеплановый</option><option>Целевой</option></select></div>
+        <div class="fld"><label>Документ / тема</label><input type="text" id="in-theme" placeholder="Инструкция №1-35 по безопасности ДПА"></div>
+        <div class="fld"><label>Дата</label><input type="date" id="in-date"></div>
+      </div>
+      <div id="instr-list-check" style="max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:6px;margin-bottom:8px"></div>
+      <div class="btn-row">
+        <button class="btn" onclick="document.querySelectorAll('.instr-chk').forEach(c=>c.checked=true)">Все</button>
+        <button class="btn btn-g" onclick="saveInstr()">Записать инструктаж</button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="cht">📋 Персонал <span id="sf-cnt" style="color:var(--muted);font-weight:400;font-size:11px;margin-left:5px"></span></div>
+      <select id="sf-filt" style="padding:4px 8px;font-size:11px;width:160px" onchange="renderStaff()"><option value="">Все роли</option><option>Мастер горный</option><option>Машинист экскаватора</option><option>Машинист ДПА</option><option>Электромеханик</option></select>
+    </div>
+    <div class="cb">
+      <div class="info">💡 <b>Исключить</b> — сотрудник не получает смены в автографике, но остаётся в системе.</div>
+      <div class="staff-grid" id="staff-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ РЕМОНТ ═══ -->
+<div class="page" id="p-equip">
+  <div class="card">
+    <div class="ch"><div class="cht">🔧 Дефект / Простой / Ремонт</div></div>
+    <div class="cb">
+      <div class="fg c3">
+        <div class="fld"><label>Оборудование</label><input type="text" id="eq-name" placeholder="ПДСУ-200 №1, конвейер №5, СБШ..."></div>
+        <div class="fld"><label>Куда направлено</label><select id="eq-dest"><option>ЦЭРМ</option><option>ЦРГО</option><option>Эл.цех</option><option>ЭРГО</option><option>УБВР</option><option>Ремонт на месте</option></select></div>
+        <div class="fld"><label>Дата</label><input type="date" id="eq-date"></div>
+      </div>
+      <div class="fg c4">
+        <div class="fld"><label>Часов простоя</label><input type="number" id="eq-hrs" placeholder="21" step="0.5"></div>
+        <div class="fld"><label>Потери, м³</label><input type="number" id="eq-loss" placeholder="780"></div>
+        <div class="fld"><label>Срочность</label><select id="eq-pri"><option>Обычная</option><option>Срочно</option><option>Авария</option></select></div>
+        <div class="fld"><label>Статус</label><select id="eq-stat"><option>В ремонте</option><option>Готово</option><option>Списано</option></select></div>
+      </div>
+      <div class="fld"><label>Причина / описание дефекта</label><textarea id="eq-desc" placeholder="демонтаж м/барабана СМД-108 на ПДСУ-200 №2 / отсутствие запчастей..."></textarea></div>
+      <div class="btn-row"><button class="btn btn-g" onclick="saveEquip()">Сохранить</button></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="cht">📋 Журнал оборудования</div></div>
+    <div class="cb"><div class="tw"><table><thead><tr><th>Оборудование</th><th>Куда</th><th>Дата</th><th>Часов</th><th>Потери м³</th><th>Срочность</th><th>Статус</th><th></th></tr></thead><tbody id="equip-list"></tbody></table></div></div>
+  </div>
+</div>
+
+<!-- ═══ ЗАЯВКИ ═══ -->
+<div class="page" id="p-orders">
+  <div class="card">
+    <div class="ch"><div class="cht">📋 Новая заявка</div></div>
+    <div class="cb">
+      <div class="fg c3">
+        <div class="fld"><label>Вид заявки</label><select id="ord-kind"><option>Специалист</option><option>Материалы</option><option>Щебень</option><option>Запчасти</option></select></div>
+        <div class="fld"><label>Наименование / специалист</label><input type="text" id="ord-obj" placeholder="Сварщик / масло И-20А / щебень 10×80"></div>
+        <div class="fld"><label>Количество / ед.</label><input type="text" id="ord-qty" placeholder="50 кг / пол смены"></div>
+      </div>
+      <div class="fg c3">
+        <div class="fld"><label>Дата</label><input type="date" id="ord-date"></div>
+        <div class="fld"><label>Период / объект</label><input type="text" id="ord-period" placeholder="январь 2026 / сито грохота"></div>
+        <div class="fld"><label>Кто подписал</label><input type="text" id="ord-sign" placeholder="Ахметов А.К."></div>
+      </div>
+      <div class="btn-row"><button class="btn btn-g" onclick="saveOrder()">Создать заявку</button></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="cht">📊 Открытые заявки</div></div>
+    <div class="cb"><div class="tw"><table><thead><tr><th>Дата</th><th>Вид</th><th>Наименование</th><th>Кол-во</th><th>Период</th><th>Подписал</th><th></th></tr></thead><tbody id="orders-list"></tbody></table></div></div>
+  </div>
+</div>
+
+<!-- ═══ БЕЗОПАСНОСТЬ ═══ -->
+<div class="page" id="p-safety">
+  <div class="card">
+    <div class="ch"><div class="cht">🪖 Чек-лист проверки безопасности</div></div>
+    <div class="cb">
+      <div class="fg c3">
+        <div class="fld"><label>Вид проверки</label><select id="sf-type"><option>Огнеопасные работы</option><option>ГПМ (мостовые/козловые)</option><option>Поведенческий аудит БТ</option><option>Внеплановый обход</option></select></div>
+        <div class="fld"><label>Дата</label><input type="date" id="sf-date"></div>
+        <div class="fld"><label>Структурное подразделение</label><input type="text" id="sf-dept" value="УДПЩ №1"></div>
+      </div>
+      <div class="fg c3">
+        <div class="fld"><label>Время начала</label><input type="time" id="sf-start"></div>
+        <div class="fld"><label>Время окончания</label><input type="time" id="sf-end"></div>
+        <div class="fld"><label>Ответственный инспектор</label><select id="sf-insp"></select></div>
+      </div>
+      <div class="fld"><label>Нарушения / замечания</label><textarea id="sf-notes" placeholder="нарушения не выявлены / описание замечания..."></textarea></div>
+      <div class="btn-row"><button class="btn btn-g" onclick="saveSafety()">Сохранить</button></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="cht">📋 Журнал проверок</div></div>
+    <div class="cb"><div class="tw"><table><thead><tr><th>Дата</th><th>Вид проверки</th><th>Подразделение</th><th>Время</th><th>Инспектор</th><th>Нарушения</th><th></th></tr></thead><tbody id="safety-list"></tbody></table></div></div>
+  </div>
+</div>
+
+<!-- ═══ МАРКШЕЙДЕРИЯ ═══ -->
+<div class="page" id="p-mark">
+  <div class="card">
+    <div class="ch"><div class="cht">🗺️ Маркшейдерский замер</div></div>
+    <div class="cb">
+      <div class="fg c3">
+        <div class="fld"><label>Дата замера</label><input type="date" id="mk-date"></div>
+        <div class="fld"><label>Период (месяц)</label><input type="month" id="mk-month"></div>
+        <div class="fld"><label>Маркшейдер</label><input type="text" id="mk-who" placeholder="ФИО маркшейдера"></div>
+      </div>
+      <div class="sec">Вскрыша</div>
+      <div class="fg c2">
+        <div class="fld"><label>Западный участок, м³</label><input type="number" id="mk-vw" placeholder="7450"></div>
+        <div class="fld"><label>Восточный участок, м³</label><input type="number" id="mk-ve" placeholder="0"></div>
+      </div>
+      <div class="sec">Камень</div>
+      <div class="fg c3">
+        <div class="fld"><label>Западный участок, м³</label><input type="number" id="mk-kw" placeholder="19235"></div>
+        <div class="fld"><label>Восточный участок, м³</label><input type="number" id="mk-ke" placeholder="0"></div>
+        <div class="fld"><label>Негабарит, м³</label><input type="number" id="mk-neg" placeholder="0"></div>
+      </div>
+      <div class="btn-row"><button class="btn btn-g" onclick="saveMark()">Сохранить замер</button></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="cht">📋 История замеров</div></div>
+    <div class="cb"><div class="tw"><table><thead><tr><th>Период</th><th>Вскрыша З</th><th>Вскрыша В</th><th>Камень З</th><th>Камень В</th><th>Негабарит</th><th>Маркшейдер</th><th></th></tr></thead><tbody id="mark-list"></tbody></table></div></div>
+  </div>
+</div>
+
+<!-- ═══ ОТЧЁТЫ ═══ -->
+<div class="page" id="p-report">
+  <div class="card">
+    <div class="ch"><div class="cht">📄 Автогенерация отчётов</div></div>
+    <div class="cb">
+      <div class="fg c3">
+        <div class="fld"><label>Дата / период</label><input type="date" id="rep-date"></div>
+        <div class="fld"><label>Тип отчёта</label>
+          <select id="rep-type">
+            <option value="daily">Суточный отчёт (форма УДПЩ)</option>
+            <option value="weekly">Недельный отчёт</option>
+            <option value="monthly">Месячный отчёт (лицевая + баланс)</option>
+            <option value="water">Справка по откачке воды</option>
+            <option value="expected">Справка ожидаемого выполнения</option>
+            <option value="frac">Ожидаемые по фракциям</option>
+          </select>
+        </div>
+        <div class="fld" style="display:flex;align-items:flex-end;gap:7px">
+          <button class="btn btn-g" style="flex:1" onclick="genReport()">Сформировать</button>
+          <button class="btn btn-b" onclick="copyReport()">Копировать</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="cht">📋 Текст отчёта</div></div>
+    <div class="cb"><pre id="rep-text" style="font-family:var(--mono);font-size:11px;line-height:1.7;white-space:pre-wrap;color:var(--text)">Выбери тип и нажми "Сформировать"</pre></div>
+  </div>
+</div>
+
+<!-- ═══ ЗАГРУЗКА ═══ -->
+<div class="page" id="p-bulk">
+  <div class="card">
+    <div class="ch"><div class="cht">📥 Загрузка из WhatsApp / чата мастеров</div></div>
+    <div class="cb">
+      <p style="font-size:12px;color:var(--muted);margin-bottom:8px">Вставь сообщения мастеров — система распознаёт данные автоматически.</p>
+      <textarea style="width:100%;min-height:90px;font-family:var(--mono);font-size:11px;background:var(--s2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:9px;resize:vertical" id="bulk-text" placeholder="Ардак: Доброе утро.&#10;10*80=1599&#10;25*60=0&#10;отсев=12.2/8.5&#10;Насосы откл в 3.30&#10;Отгрузки не было."></textarea>
+      <div class="fg c2" style="margin-top:8px">
+        <div class="fld"><label>Дата</label><input type="date" id="bulk-date"></div>
+        <div class="fld"><label>Смена</label><select id="bulk-shift"><option value="">Авто</option><option value="1">1 смена</option><option value="2">2 смена</option></select></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn" onclick="document.getElementById('bulk-text').value='';document.getElementById('bulk-res').innerHTML=''">Очистить</button>
+        <button class="btn btn-g" onclick="parseBulk()">Распознать и загрузить</button>
+      </div>
+      <div id="bulk-res" style="margin-top:10px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CORE AI ═══ -->
+<div class="page" id="p-ai">
+  <div class="card">
+    <div class="ch"><div class="cht">🧠 Core AI · УДПЩ №1</div><span style="font-size:10px;color:var(--muted);font-family:var(--mono)">∴ локальный анализ</span></div>
+    <div class="cb">
+      <div class="ai-chat" id="ai-chat"><div style="color:var(--muted);font-size:12px">∴ Core активен. Анализирую данные участка...</div></div>
+      <div class="ai-row">
+        <input type="text" id="ai-inp" placeholder="Выполнение плана, аварии, мастера, остатки..." onkeydown="if(event.key==='Enter')aiSend()">
+        <button class="btn btn-g" style="padding:7px 12px" onclick="aiSend()">𐰙</button>
+      </div>
+      <div class="chips">
+        <div class="chip" onclick="aiQ('Выполнение плана')">План</div>
+        <div class="chip" onclick="aiQ('Остатки щебня')">Остатки</div>
+        <div class="chip" onclick="aiQ('Итоги отгрузки')">Отгрузка</div>
+        <div class="chip" onclick="aiQ('Что в ремонте')">Ремонт</div>
+        <div class="chip" onclick="aiQ('Водоотлив за месяц')">Водоотлив</div>
+        <div class="chip" onclick="aiQ('Кто выходит сегодня')">Смена</div>
+        <div class="chip" onclick="aiQ('Открытые заявки')">Заявки</div>
+        <div class="chip" onclick="aiQ('Полная сводка')">Сводка</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+<div class="ftr" id="ftr">∴ Core | УДПЩ №1 · Богатырь | Ахметов А.К.</div>
+<div class="notify" id="ntf"></div>
+
+<!-- Автографик модал -->
+<div class="modal-bg" id="auto-modal">
+  <div class="modal">
+    <div class="modal-h"><div class="modal-t">🤖 Автографик — 1 мастер + 2 экскаватор + 2 ДПА</div><button class="xbtn" onclick="closeM('auto-modal')">✕</button></div>
+    <div class="info">На каждую смену: 1 мастер горный + 2 машиниста экскаватора + 2 машиниста ДПА. Равномерно по кругу.</div>
+    <div class="fg c2">
+      <div class="fld"><label>С</label><input type="date" id="a-from"></div>
+      <div class="fld"><label>По</label><input type="date" id="a-to"></div>
+    </div>
+    <div class="fg c3">
+      <div class="fld"><label>Норма мастер</label><input type="number" id="a-nm" value="13"></div>
+      <div class="fld"><label>Норма экскаватор</label><input type="number" id="a-ne" value="10"></div>
+      <div class="fld"><label>Норма ДПА</label><input type="number" id="a-nd" value="7"></div>
+    </div>
+    <div class="sec">Кто участвует:</div>
+    <div style="max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:6px;margin-bottom:10px" id="a-staff-list"></div>
+    <div style="background:rgba(61,184,122,.1);border:1px solid rgba(61,184,122,.3);border-radius:8px;padding:9px;font-size:12px;margin-bottom:10px" id="a-preview">Нажми "Предпросмотр"</div>
+    <div class="btn-row">
+      <button class="btn" onclick="previewAuto()">Предпросмотр</button>
+      <button class="btn btn-g" onclick="applyAuto()">Применить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Редактор сотрудника -->
+<div class="modal-bg" id="edit-modal">
+  <div class="modal">
+    <div class="modal-h"><div class="modal-t" id="edit-ttl">Редактировать</div><button class="xbtn" onclick="closeM('edit-modal')">✕</button></div>
+    <div class="fg c2">
+      <div class="fld"><label>ФИО</label><input type="text" id="e-name"></div>
+      <div class="fld"><label>Таб. №</label><input type="text" id="e-tab"></div>
+    </div>
+    <div class="fld" style="margin-bottom:8px"><label>Роль</label><select id="e-role"><option>Мастер горный</option><option>Машинист экскаватора</option><option>Машинист ДПА</option><option>Электромеханик</option><option>Начальник участка</option></select></div>
+    <div class="fld" style="margin-bottom:8px"><label>Статус</label><select id="e-stat"><option>Работает</option><option>В отпуске</option><option>Больничный</option><option>Уволен</option></select></div>
+    <input type="hidden" id="e-id">
+    <div class="btn-row"><button class="btn btn-g" onclick="saveEdit()">Сохранить</button></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// ПЕРСОНАЛ ИЗ ДОКУМЕНТОВ
+// ══════════════════════════════════════════════
+const DEFAULT_STAFF=[
+  {id:1,name:'Ахметов А.К.',role:'Начальник участка',tab:'—',status:'Работает',excl:true},
+  {id:2,name:'Хакимов И.Р.',role:'Мастер горный',tab:'2399',status:'Работает',excl:false},
+  {id:3,name:'Кузьменко Д.В.',role:'Мастер горный',tab:'15612',status:'Работает',excl:false},
+  {id:4,name:'Дранов К.Н.',role:'Мастер горный',tab:'21520',status:'Работает',excl:false},
+  {id:5,name:'Бейсенов А.А-Р.',role:'Мастер горный',tab:'22398',status:'Работает',excl:false},
+  {id:6,name:'Булекбаев К.Ж.',role:'Мастер горный',tab:'5340',status:'Работает',excl:false},
+  {id:7,name:'Гулько А.А.',role:'Мастер горный',tab:'—',status:'Работает',excl:false},
+  {id:8,name:'Казаков Д.О.',role:'Электромеханик',tab:'21298',status:'Работает',excl:true},
+  {id:101,name:'Машинист экскав. 1',role:'Машинист экскаватора',tab:'—',status:'Работает',excl:false},
+  {id:102,name:'Машинист экскав. 2',role:'Машинист экскаватора',tab:'—',status:'Работает',excl:false},
+  {id:103,name:'Машинист экскав. 3',role:'Машинист экскаватора',tab:'—',status:'Работает',excl:false},
+  {id:104,name:'Машинист экскав. 4',role:'Машинист экскаватора',tab:'—',status:'Работает',excl:false},
+  {id:105,name:'Машинист экскав. 5',role:'Машинист экскаватора',tab:'—',status:'Работает',excl:false},
+  {id:106,name:'Машинист экскав. 6',role:'Машинист экскаватора',tab:'—',status:'Работает',excl:false},
+  {id:107,name:'Машинист экскав. 7',role:'Машинист экскаватора',tab:'—',status:'Работает',excl:false},
+  {id:108,name:'Машинист экскав. 8',role:'Машинист экскаватора',tab:'—',status:'Работает',excl:false},
+  {id:9,name:'Шипилов В.В.',role:'Машинист ДПА',tab:'—',status:'Работает',excl:false},
+  {id:10,name:'Бекишев А.Г.',role:'Машинист ДПА',tab:'—',status:'Работает',excl:false},
+  {id:11,name:'Ускембаев Н.А.',role:'Машинист ДПА',tab:'—',status:'Работает',excl:false},
+  {id:12,name:'Байзаков Б.Б.',role:'Машинист ДПА',tab:'—',status:'Работает',excl:false},
+  {id:13,name:'Пополой С.В.',role:'Машинист ДПА',tab:'—',status:'Работает',excl:false},
+  {id:14,name:'Якоби А.В.',role:'Машинист ДПА',tab:'—',status:'Работает',excl:false},
+  {id:15,name:'Турлубаев А.К.',role:'Машинист ДПА',tab:'—',status:'Работает',excl:false},
+  {id:16,name:'Айтпышев Е.К.',role:'Машинист ДПА',tab:'—',status:'Работает',excl:false},
+  {id:17,name:'Турсунгалиев К.К.',role:'Машинист ДПА',tab:'—',status:'Работает',excl:false},
+  {id:18,name:'Таубаев Н.Д.',role:'Машинист ДПА',tab:'—',status:'Работает',excl:false},
+  {id:19,name:'Тиштуганов А.И.',role:'Машинист ДПА',tab:'—',status:'Работает',excl:false},
+  {id:20,name:'Аубакиров Б.С.',role:'Машинист ДПА',tab:'—',status:'Работает',excl:false},
+  {id:21,name:'Блинов А.В.',role:'Машинист ДПА',tab:'—',status:'Работает',excl:false},
+  {id:22,name:'Бочаров А.В.',role:'Машинист ДПА',tab:'—',status:'Работает',excl:false},
+  {id:23,name:'Ибраев А.Т.',role:'Машинист ДПА',tab:'—',status:'Работает',excl:false},
+  {id:24,name:'Кенжалин Г.М.',role:'Машинист ДПА',tab:'—',status:'Работает',excl:false},
+  {id:25,name:'Краснобаев И.В.',role:'Машинист ДПА',tab:'—',status:'Работает',excl:false},
+  {id:26,name:'Мукин К.М.',role:'Машинист ДПА',tab:'—',status:'Работает',excl:false},
+]
+
+const ROLE_COLORS={'Мастер горный':'var(--gold)','Машинист экскаватора':'var(--green)','Машинист ДПА':'var(--blue)','Электромеханик':'var(--purple)','Начальник участка':'var(--amber)'}
+const MONTHS=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь']
+
+// ══════════════════════════════════════════════
+// DB
+// ══════════════════════════════════════════════
+const DB={
+  get:k=>{try{return JSON.parse(localStorage.getItem(k)||'null')||[]}catch{return[]}},
+  set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)),
+  push:(k,v)=>{const a=DB.get(k);a.push({...v,id:Date.now()});DB.set(k,a)},
+  del:(k,id)=>DB.set(k,DB.get(k).filter(x=>x.id!==id)),
+  upd:(k,id,v)=>DB.set(k,DB.get(k).map(x=>x.id===id?{...x,...v}:x))
+}
+
+function initDB(){if(!DB.get('staff').length)DB.set('staff',DEFAULT_STAFF)}
+const stf=()=>DB.get('staff')
+const active=()=>stf().filter(s=>s.status==='Работает')
+const masters=()=>active().filter(s=>s.role==='Мастер горный').map(s=>s.name)
+const today=()=>new Date().toISOString().split('T')[0]
+const nowt=()=>new Date().toTimeString().slice(0,5)
+const fmt=d=>d?d.split('-').reverse().join('.'):'—'
+const show=msg=>{const n=document.getElementById('ntf');n.textContent=msg;n.classList.add('show');setTimeout(()=>n.classList.remove('show'),2500)}
+
+let PER_FROM='',PER_TO=''
+
+// ══════════════════════════════════════════════
+// ИНИТ
+// ══════════════════════════════════════════════
+function initUI(){
+  const now=new Date(),y=now.getFullYear(),m=now.getMonth()
+  PER_FROM=`${y}-${String(m+1).padStart(2,'0')}-01`
+  PER_TO=`${y}-${String(m+1).padStart(2,'0')}-${new Date(y,m+1,0).getDate()}`
+  document.querySelectorAll('input[type=date]').forEach(e=>e.value=today())
+  document.querySelectorAll('input[type=time]').forEach(e=>e.value=nowt())
+  document.querySelectorAll('input[type=month]').forEach(e=>e.value=`${y}-${String(m+1).padStart(2,'0')}`)
+  document.getElementById('per-from').value=PER_FROM
+  document.getElementById('per-to').value=PER_TO
+  document.getElementById('a-from').value=PER_FROM
+  document.getElementById('a-to').value=PER_TO
+  document.getElementById('q-from').value=today()
+  document.getElementById('q-to').value=today()
+  document.getElementById('sched-norm').value=localStorage.getItem('norm_s')||'13'
+  document.getElementById('htime').textContent=now.toLocaleDateString('ru',{weekday:'short',day:'numeric',month:'short'})
+  document.getElementById('dash-dt').textContent=now.toLocaleDateString('ru',{day:'numeric',month:'long'})
+  // Месяцы для водоотлива
+  const wsel=document.getElementById('w-rep-month')
+  for(let i=0;i<12;i++)wsel.innerHTML+=`<option value="${i}">${MONTHS[i]} ${y}</option>`
+  wsel.value=m
+  populateSelects()
+  // Авторасчёт разницы расходомера
+  ;['w-start','w-end'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{
+    const s=Number(document.getElementById('w-start').value)||0
+    const e=Number(document.getElementById('w-end').value)||0
+    document.getElementById('w-diff').value=e>s?(e-s).toFixed(2):''
+  }))
+}
+
+function saveNorm(){localStorage.setItem('norm_s',document.getElementById('sched-norm').value)}
+
+function populateSelects(){
+  const ms=masters()
+  ;['p-master','nr-master'].forEach(id=>{const el=document.getElementById(id);if(!el)return;el.innerHTML=ms.map(m=>`<option>${m}</option>`).join('')})
+  const all=active()
+  const qw=document.getElementById('q-who');if(qw)qw.innerHTML=all.map(s=>`<option value="${s.name}">${s.name} (${s.role})</option>`).join('')
+  const si=document.getElementById('sf-insp');if(si)si.innerHTML=ms.map(m=>`<option>${m}</option>`).join('')
+}
+
+// ══════════════════════════════════════════════
+// НАВ
+// ══════════════════════════════════════════════
+function go(p,el){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'))
+  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('on'))
+  document.getElementById('p-'+p).classList.add('on');el.classList.add('on')
+  const fn={dash:loadDash,prod:loadProdList,ship:loadShipList,equip:loadEquipList,orders:loadOrders,staff:renderStaff,sched:()=>{populateSelects();renderSched()},sklad:loadLZK,water:loadWaterList,eco:loadEcoList,mark:loadMarkList,safety:loadSafetyList}
+  if(fn[p])fn[p]()
+}
+
+// ══════════════════════════════════════════════
+// СВОДКА
+// ══════════════════════════════════════════════
+function loadDash(){
+  const prods=DB.get('production'),narad=DB.get('narads'),ships=DB.get('shipments')
+  const equips=DB.get('equipment'),ords=DB.get('orders'),sklads=DB.get('sklad'),sched=DB.get('schedule')
+  const t=today()
+
+  // Последний остаток
+  const lastSk=sklads.slice(-1)[0]
+  document.getElementById('d-s10').textContent=lastSk?lastSk.s10||'—':'—'
+  document.getElementById('d-s25').textContent=lastSk?lastSk.s25||'—':'—'
+  document.getElementById('d-sot').textContent=lastSk?lastSk.sot||'—':'—'
+
+  const totalKam=prods.reduce((a,p)=>a+Number(p.kamR||0)+Number(p.kamC||0),0)
+  const totalShip=ships.reduce((a,s)=>a+Number(s.vol||0),0)
+  const planTotal=narad.reduce((a,n)=>a+Number(n.p10||0),0)
+  const factTotal=prods.reduce((a,p)=>a+Number(p.s10||0),0)
+  const planPct=planTotal>0?Math.round(factTotal/planTotal*100):null
+  const totalWater=DB.get('water').reduce((a,w)=>a+Number(w.vol||0),0)
+  const openOrds=ords.filter(o=>o.status==='Открыта').length
+  const inRepair=equips.filter(e=>e.stat==='В ремонте').length
+
+  document.getElementById('d-kam').textContent=totalKam||'—'
+  document.getElementById('d-ship').textContent=totalShip||'—'
+  document.getElementById('d-plan').textContent=planPct!=null?planPct+'%':'—'
+  document.getElementById('d-plan').style.color=planPct==null?'var(--gold)':planPct>=100?'var(--green)':planPct>=80?'var(--amber)':'var(--red)'
+  document.getElementById('d-water').textContent=totalWater||'—'
+  document.getElementById('d-repair').textContent=inRepair
+  document.getElementById('d-ord').textContent=openOrds
+  document.getElementById('ob').textContent=openOrds
+
+  // Кто выходит
+  const s1=active().filter(s=>sched.find(x=>x.name===s.name&&x.date===t&&x.type==='1'))
+  const s2=active().filter(s=>sched.find(x=>x.name===s.name&&x.date===t&&x.type==='2'))
+  let sb=''
+  if(s1.length)sb+=`<div class="sr"><span style="color:var(--green)">1 смена</span><span style="font-size:11px;color:var(--muted)">${s1.map(s=>s.name.split(' ')[0]).join(', ')}</span></div>`
+  if(s2.length)sb+=`<div class="sr"><span style="color:var(--blue)">2 смена</span><span style="font-size:11px;color:var(--muted)">${s2.map(s=>s.name.split(' ')[0]).join(', ')}</span></div>`
+  if(planTotal>0){const pct=planPct||0,col=pct>=100?'var(--green)':pct>=80?'var(--amber)':'var(--red)';sb+=`<div class="sr"><span>План/факт</span><span class="sv" style="color:${col}">${factTotal}/${planTotal} м³ · ${pct}%</span></div>`}
+  if(totalShip>0)sb+=`<div class="sr"><span>Отгружено</span><span class="sv" style="color:var(--green)">${totalShip} м³</span></div>`
+  document.getElementById('dash-body').innerHTML=sb||'<div style="color:var(--muted);text-align:center;padding:14px;font-size:12px">Нет данных за сегодня</div>'
+
+  const evs=[
+    ...equips.filter(e=>e.stat==='В ремонте').slice(-3).map(e=>({t:e.date,txt:`Ремонт: ${e.name}`,c:'var(--red)'})),
+    ...ords.filter(o=>o.status==='Открыта').slice(-3).map(o=>({t:o.date,txt:`Заявка: ${o.kind} — ${o.obj}`,c:'var(--amber)'})),
+  ].sort((a,b)=>b.t.localeCompare(a.t)).slice(0,6)
+  document.getElementById('dash-ev').innerHTML=evs.length
+    ?evs.map(e=>`<div class="sr"><span style="color:${e.c}">${e.txt}</span><span style="font-size:10px;color:var(--muted)">${fmt(e.t)}</span></div>`).join('')
+    :'<div style="color:var(--muted);text-align:center;padding:12px;font-size:12px">Нет событий</div>'
+}
+
+// ══════════════════════════════════════════════
+// НАРЯД
+// ══════════════════════════════════════════════
+function saveNarad(){
+  const p10=document.getElementById('nr-p10').value,f10=document.getElementById('nr-f10').value
+  const pct=p10&&f10?Math.round(Number(f10)/Number(p10)*100):null
+  DB.push('narads',{date:document.getElementById('nr-date').value,shift:document.getElementById('nr-shift').value,master:document.getElementById('nr-master').value,p10,p25:document.getElementById('nr-p25').value,ex1:document.getElementById('nr-ex1').value,ex2:document.getElementById('nr-ex2').value,f10,f25:document.getElementById('nr-f25').value,ot1:document.getElementById('nr-ot1').value,ot2:document.getElementById('nr-ot2').value,pdsu:document.getElementById('nr-pdsu').value,lines:document.getElementById('nr-lines').value,feed:document.getElementById('nr-feed').value,note:document.getElementById('nr-note').value,pct})
+  loadNaradList();show('✓ Наряд сохранён')
+}
+function loadNaradList(){
+  const rows=DB.get('narads').slice(-20).reverse()
+  document.getElementById('narad-list').innerHTML=rows.length
+    ?rows.map(r=>{const col=r.pct==null?'var(--muted)':r.pct>=100?'var(--green)':r.pct>=80?'var(--amber)':'var(--red)';return`<tr><td>${fmt(r.date)}</td><td>${r.shift}</td><td>${r.master}</td><td style="color:var(--muted)">${r.p10||'—'}</td><td style="color:var(--green);font-weight:600">${r.f10||'—'}</td><td style="color:${col};font-weight:700">${r.pct!=null?r.pct+'%':'—'}</td><td>${r.pdsu||'—'}</td><td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px">${r.note||'—'}</td><td><button class="btn btn-r" style="padding:2px 7px;font-size:10px" onclick="DB.del('narads',${r.id});loadNaradList()">✕</button></td></tr>`}).join('')
+    :'<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:14px">Нет данных</td></tr>'
+}
+
+// ══════════════════════════════════════════════
+// ПРОИЗВОДСТВО
+// ══════════════════════════════════════════════
+function saveProd(){
+  DB.push('production',{date:document.getElementById('p-date').value,pdsu:document.getElementById('p-pdsu').value,hrs:document.getElementById('p-hrs').value,s10:document.getElementById('p-s10').value,s25:document.getElementById('p-s25').value,ot1:document.getElementById('p-ot1').value,ot2:document.getElementById('p-ot2').value,kamR:document.getElementById('p-kam-r').value,kamC:document.getElementById('p-kam-c').value,vsk:document.getElementById('p-vsk').value,excav:document.getElementById('p-excav').value,lines:document.getElementById('p-lines').value,master:document.getElementById('p-master').value,notes:document.getElementById('p-notes').value})
+  loadProdList();show('✓ Сохранено')
+}
+function showDaily(){
+  const d=document.getElementById('daily-d').value
+  const prods=DB.get('production').filter(p=>p.date===d)
+  const totalKam=prods.reduce((a,p)=>a+Number(p.kamR||0)+Number(p.kamC||0),0)
+  const totalVsk=prods.reduce((a,p)=>a+Number(p.vsk||0),0)
+  let h=`<div class="sr"><span>Камень итого</span><span class="sv" style="color:var(--green)">${totalKam} м³</span></div>`
+  h+=`<div class="sr"><span>Вскрыша</span><span class="sv">${totalVsk} м³</span></div>`
+  prods.forEach(p=>{h+=`<div class="sr"><span>${p.pdsu} · ${p.master}</span></div>`;h+=`<div class="sr"><span>10×80</span><span class="sv">${p.s10||0} м³</span></div><div class="sr"><span>25×60</span><span class="sv">${p.s25||0} м³</span></div><div class="sr"><span>Отсев</span><span class="sv">${p.ot1||'—'}/${p.ot2||'—'}</span></div>`})
+  document.getElementById('daily-body').innerHTML=h||'<div style="color:var(--muted);text-align:center;padding:12px;font-size:12px">Нет данных</div>'
+}
+function loadProdList(){
+  const rows=DB.get('production').slice(-20).reverse()
+  document.getElementById('prod-list').innerHTML=rows.length
+    ?rows.map(r=>`<tr><td>${fmt(r.date)}</td><td>${r.pdsu||'—'}</td><td>${r.hrs||'—'}</td><td style="color:var(--green);font-weight:600">${r.s10||'—'}</td><td>${r.s25||'—'}</td><td>${Number(r.kamR||0)+Number(r.kamC||0)||'—'}</td><td>${r.vsk||'—'}</td><td>${r.master||'—'}</td><td><button class="btn btn-r" style="padding:2px 7px;font-size:10px" onclick="DB.del('production',${r.id});loadProdList()">✕</button></td></tr>`).join('')
+    :'<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:14px">Нет данных</td></tr>'
+}
+
+// ══════════════════════════════════════════════
+// ОТГРУЗКА
+// ══════════════════════════════════════════════
+function saveShip(){DB.push('shipments',{date:document.getElementById('sh-date').value,frac:document.getElementById('sh-frac').value,vol:document.getElementById('sh-vol').value,uch:document.getElementById('sh-uch').value,dest:document.getElementById('sh-dest').value,type:document.getElementById('sh-type').value,trans:document.getElementById('sh-trans').value,note:document.getElementById('sh-note').value});loadShipList();show('✓ Добавлено')}
+function loadShipList(){
+  const rows=DB.get('shipments').slice(-25).reverse()
+  document.getElementById('ship-list').innerHTML=rows.length
+    ?rows.map(r=>`<tr><td>${fmt(r.date)}</td><td><span class="badge bgold">${r.frac}</span></td><td style="color:var(--green);font-weight:700">${r.vol} м³</td><td>${r.uch||'—'}</td><td>${r.dest||'—'}</td><td><span class="badge ${r.type==='Реализация'?'bg':'bb'}">${r.type}</span></td><td>${r.trans||'—'}</td><td><button class="btn btn-r" style="padding:2px 7px;font-size:10px" onclick="DB.del('shipments',${r.id});loadShipList()">✕</button></td></tr>`).join('')
+    :'<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:14px">Нет данных</td></tr>'
+}
+
+// ══════════════════════════════════════════════
+// СКЛАД / ЛЗК
+// ══════════════════════════════════════════════
+function saveSklad(){DB.push('sklad',{date:document.getElementById('sk-date').value,type:document.getElementById('sk-type').value,s10:document.getElementById('sk-s10').value,s25:document.getElementById('sk-s25').value,sot:document.getElementById('sk-sot').value,total:document.getElementById('sk-total').value,sign:document.getElementById('sk-sign').value});show('✓ Остаток сохранён')}
+function saveLZK(){
+  const lim=Number(document.getElementById('lzk-lim').value)||0
+  const out=Number(document.getElementById('lzk-out').value)||0
+  DB.push('lzk',{month:document.getElementById('lzk-month').value,sklad:document.getElementById('lzk-sklad').value,num:document.getElementById('lzk-num').value,mat:document.getElementById('lzk-mat').value,unit:document.getElementById('lzk-unit').value,lim,out,rest:Math.max(0,lim-out)})
+  loadLZK();show('✓ ЛЗК записана')
+}
+function loadLZK(){
+  const rows=DB.get('lzk').slice(-25).reverse()
+  document.getElementById('lzk-list').innerHTML=rows.length
+    ?rows.map(r=>`<tr><td>${r.month}</td><td>${r.sklad}</td><td>${r.num}</td><td>${r.mat}</td><td>${r.unit}</td><td>${r.lim}</td><td style="color:var(--amber)">${r.out}</td><td style="color:${r.rest>0?'var(--green)':'var(--red)'}">${r.rest}</td><td><button class="btn btn-r" style="padding:2px 7px;font-size:10px" onclick="DB.del('lzk',${r.id});loadLZK()">✕</button></td></tr>`).join('')
+    :'<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:14px">Нет данных</td></tr>'
+}
+
+// ══════════════════════════════════════════════
+// ВОДООТЛИВ
+// ══════════════════════════════════════════════
+function saveWater(){
+  DB.push('water',{date:document.getElementById('w-date').value,pump:document.getElementById('w-pump').value,wstart:document.getElementById('w-start').value,wend:document.getElementById('w-end').value,diff:document.getElementById('w-diff').value,hrs:document.getElementById('w-hrs').value,koef:document.getElementById('w-koef').value,vol:document.getElementById('w-vol').value,fid:document.getElementById('w-fid').value,who:document.getElementById('w-who').value})
+  loadWaterList();show('✓ Записано')
+}
+function loadWaterList(){
+  const rows=DB.get('water').slice(-20).reverse()
+  document.getElementById('water-list').innerHTML=rows.length
+    ?rows.map(r=>`<tr><td>${fmt(r.date)}</td><td>${r.pump}</td><td style="font-family:var(--mono)">${r.wstart||'—'}</td><td style="font-family:var(--mono)">${r.wend||'—'}</td><td style="color:var(--green);font-weight:600">${r.diff||'—'}</td><td>${r.hrs||'—'}</td><td>${r.koef||'—'}</td><td style="color:var(--blue);font-weight:600">${r.vol||'—'}</td><td>${r.who||'—'}</td><td><button class="btn btn-r" style="padding:2px 7px;font-size:10px" onclick="DB.del('water',${r.id});loadWaterList()">✕</button></td></tr>`).join('')
+    :'<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:14px">Нет данных</td></tr>'
+}
+function genWaterReport(){
+  const mIdx=Number(document.getElementById('w-rep-month').value)
+  const y=new Date().getFullYear()
+  const mStr=`${y}-${String(mIdx+1).padStart(2,'0')}`
+  const rows=DB.get('water').filter(w=>w.date&&w.date.startsWith(mStr))
+  const total=rows.reduce((a,w)=>a+Number(w.vol||0),0)
+  document.getElementById('water-report').innerHTML=`
+    <div class="sr"><span>Период</span><span class="sv">${MONTHS[mIdx]} ${y}</span></div>
+    <div class="sr"><span>Записей</span><span class="sv">${rows.length}</span></div>
+    <div class="sr"><span>Итого откачано в озеро Акбидаик</span><span class="sv" style="color:var(--blue)">${total} м³</span></div>
+    <div class="sr"><span>Ответственный</span><span style="font-size:12px;color:var(--muted)">Начальник УДПЩ №1 · А. Ахметов</span></div>
+  `
+}
+
+// ══════════════════════════════════════════════
+// ЭКОЛОГИЯ
+// ══════════════════════════════════════════════
+function saveEco(){DB.push('eco',{month:document.getElementById('eco-month').value,dsu1:document.getElementById('eco-dsu1').value,dsu2:document.getElementById('eco-dsu2').value,kr:document.getElementById('eco-kr').value,kc:document.getElementById('eco-kc').value,ot:document.getElementById('eco-ot').value,vsk:document.getElementById('eco-vsk').value});loadEcoList();show('✓ Сохранено')}
+function loadEcoList(){
+  const rows=DB.get('eco').slice(-12).reverse()
+  document.getElementById('eco-list').innerHTML=rows.length
+    ?rows.map(r=>`<tr><td>${r.month}</td><td>${r.dsu1||'—'}</td><td>${r.dsu2||'—'}</td><td>${r.kr||'—'}</td><td>${r.kc||'—'}</td><td>${r.ot||'—'}</td><td>${r.vsk||'—'}</td><td><button class="btn btn-r" style="padding:2px 7px;font-size:10px" onclick="DB.del('eco',${r.id});loadEcoList()">✕</button></td></tr>`).join('')
+    :'<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:14px">Нет данных</td></tr>'
+}
+
+// ══════════════════════════════════════════════
+// РЕМОНТ
+// ══════════════════════════════════════════════
+function saveEquip(){DB.push('equipment',{date:document.getElementById('eq-date').value,name:document.getElementById('eq-name').value,dest:document.getElementById('eq-dest').value,hrs:document.getElementById('eq-hrs').value,loss:document.getElementById('eq-loss').value,pri:document.getElementById('eq-pri').value,stat:document.getElementById('eq-stat').value,desc:document.getElementById('eq-desc').value});loadEquipList();show('✓ Сохранено')}
+function loadEquipList(){
+  const rows=DB.get('equipment').slice(-20).reverse()
+  document.getElementById('equip-list').innerHTML=rows.length
+    ?rows.map(r=>`<tr><td><b>${r.name}</b>${r.desc?`<br><span style="font-size:10px;color:var(--muted)">${r.desc.slice(0,50)}</span>`:''}</td><td>${r.dest}</td><td>${fmt(r.date)}</td><td>${r.hrs||'—'}</td><td style="color:var(--amber)">${r.loss||'—'}</td><td><span class="badge ${r.pri==='Авария'?'br':r.pri==='Срочно'?'ba':'bb'}">${r.pri}</span></td><td><span class="badge ${r.stat==='В ремонте'?'ba':r.stat==='Готово'?'bg':'br'}">${r.stat}</span></td><td style="white-space:nowrap">${r.stat==='В ремонте'?`<button class="btn bg" style="padding:2px 8px;font-size:10px;background:rgba(61,184,122,.15);color:var(--green);border-color:rgba(61,184,122,.3);margin-right:3px" onclick="DB.upd('equipment',${r.id},{stat:'Готово'});loadEquipList();show('✓')">Вернули</button>`:''}<button class="btn btn-r" style="padding:2px 7px;font-size:10px" onclick="DB.del('equipment',${r.id});loadEquipList()">✕</button></td></tr>`).join('')
+    :'<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:14px">Нет данных</td></tr>'
+}
+
+// ══════════════════════════════════════════════
+// ЗАЯВКИ
+// ══════════════════════════════════════════════
+function saveOrder(){DB.push('orders',{date:document.getElementById('ord-date').value,kind:document.getElementById('ord-kind').value,obj:document.getElementById('ord-obj').value,qty:document.getElementById('ord-qty').value,period:document.getElementById('ord-period').value,sign:document.getElementById('ord-sign').value,status:'Открыта'});loadOrders();show('✓ Заявка создана')}
+function loadOrders(){
+  const rows=DB.get('orders').filter(o=>o.status==='Открыта').slice(-20).reverse()
+  document.getElementById('orders-list').innerHTML=rows.length
+    ?rows.map(r=>`<tr><td>${fmt(r.date)}</td><td><span class="badge bb">${r.kind}</span></td><td>${r.obj}</td><td>${r.qty||'—'}</td><td>${r.period||'—'}</td><td>${r.sign||'—'}</td><td><button class="btn bg" style="padding:2px 8px;font-size:10px;background:rgba(61,184,122,.15);color:var(--green);border-color:rgba(61,184,122,.3)" onclick="DB.upd('orders',${r.id},{status:'Выполнена'});loadOrders();show('✓')">✓</button><button class="btn btn-r" style="padding:2px 7px;font-size:10px;margin-left:3px" onclick="DB.del('orders',${r.id});loadOrders()">✕</button></td></tr>`).join('')
+    :'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:14px">Нет открытых заявок</td></tr>'
+  const cnt=DB.get('orders').filter(o=>o.status==='Открыта').length
+  document.getElementById('ob').textContent=cnt;document.getElementById('d-ord').textContent=cnt
+}
+
+// ══════════════════════════════════════════════
+// БЕЗОПАСНОСТЬ
+// ══════════════════════════════════════════════
+function saveSafety(){DB.push('safety',{date:document.getElementById('sf-date').value,type:document.getElementById('sf-type').value,dept:document.getElementById('sf-dept').value,start:document.getElementById('sf-start').value,end:document.getElementById('sf-end').value,insp:document.getElementById('sf-insp').value,notes:document.getElementById('sf-notes').value});loadSafetyList();show('✓ Сохранено')}
+function loadSafetyList(){
+  const rows=DB.get('safety').slice(-20).reverse()
+  document.getElementById('safety-list').innerHTML=rows.length
+    ?rows.map(r=>`<tr><td>${fmt(r.date)}</td><td>${r.type}</td><td>${r.dept}</td><td>${r.start||'—'}–${r.end||'—'}</td><td>${r.insp||'—'}</td><td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.notes||'—'}</td><td><button class="btn btn-r" style="padding:2px 7px;font-size:10px" onclick="DB.del('safety',${r.id});loadSafetyList()">✕</button></td></tr>`).join('')
+    :'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:14px">Нет данных</td></tr>'
+}
+
+// ══════════════════════════════════════════════
+// МАРКШЕЙДЕРИЯ
+// ══════════════════════════════════════════════
+function saveMark(){DB.push('mark',{date:document.getElementById('mk-date').value,month:document.getElementById('mk-month').value,who:document.getElementById('mk-who').value,vw:document.getElementById('mk-vw').value,ve:document.getElementById('mk-ve').value,kw:document.getElementById('mk-kw').value,ke:document.getElementById('mk-ke').value,neg:document.getElementById('mk-neg').value});loadMarkList();show('✓ Замер сохранён')}
+function loadMarkList(){
+  const rows=DB.get('mark').slice(-12).reverse()
+  document.getElementById('mark-list').innerHTML=rows.length
+    ?rows.map(r=>`<tr><td>${r.month}</td><td style="color:var(--amber)">${r.vw||'—'}</td><td>${r.ve||'—'}</td><td style="color:var(--green);font-weight:600">${r.kw||'—'}</td><td>${r.ke||'—'}</td><td>${r.neg||'—'}</td><td>${r.who||'—'}</td><td><button class="btn btn-r" style="padding:2px 7px;font-size:10px" onclick="DB.del('mark',${r.id});loadMarkList()">✕</button></td></tr>`).join('')
+    :'<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:14px">Нет данных</td></tr>'
+}
+
+// ══════════════════════════════════════════════
+// ИНСТРУКТАЖИ
+// ══════════════════════════════════════════════
+function loadInstr(){
+  const people=active()
+  document.getElementById('instr-list-check').innerHTML=people.map(s=>{
+    const last=DB.get('instructs').filter(i=>i.passed&&i.passed.includes(s.name))
+    const ld=last.length?fmt(last.sort((a,b)=>b.date.localeCompare(a.date))[0].date):'❌'
+    return`<div style="display:flex;align-items:center;gap:8px;padding:5px;border-bottom:1px solid var(--border)"><input type="checkbox" class="instr-chk" value="${s.name}" style="cursor:pointer"><span style="flex:1;font-size:12px">${s.name} <span style="color:var(--muted);font-size:10px">${s.role}</span></span><span style="font-size:10px;color:var(--muted);font-family:var(--mono)">${ld}</span></div>`
+  }).join('')
+}
+function saveInstr(){
+  const passed=[...document.querySelectorAll('.instr-chk:checked')].map(c=>c.value)
+  if(!passed.length){show('Выбери сотрудников');return}
+  DB.push('instructs',{date:document.getElementById('in-date').value,type:document.getElementById('in-type').value,theme:document.getElementById('in-theme').value,passed})
+  loadInstr();show(`✓ Инструктаж: ${passed.length} чел`)
+}
+
+// ══════════════════════════════════════════════
+// ПЕРСОНАЛ
+// ══════════════════════════════════════════════
+function loadDefaultStaff(){if(!confirm('Загрузить стандартный список?'))return;DB.set('staff',DEFAULT_STAFF);renderStaff();populateSelects();show('✓ Список загружен')}
+function addStaff(){const n=document.getElementById('sf-name').value.trim();if(!n){show('Введи ФИО');return}DB.push('staff',{name:n,role:document.getElementById('sf-role').value,tab:document.getElementById('sf-tab').value||'—',status:'Работает',excl:false});document.getElementById('sf-name').value='';document.getElementById('sf-tab').value='';renderStaff();populateSelects();show('✓ Добавлен')}
+function toggleExcl(id){const s=stf().find(x=>x.id===id);if(!s)return;DB.upd('staff',id,{excl:!s.excl});renderStaff();show(s.excl?'✓ Включён':'✓ Исключён')}
+function delStaff(id){const s=stf().find(x=>x.id===id);if(!s||!confirm(`Удалить ${s.name}?`))return;DB.del('staff',id);renderStaff();populateSelects();show('✓ Удалён')}
+function openEdit(id){const s=stf().find(x=>x.id===id);if(!s)return;document.getElementById('e-id').value=id;document.getElementById('e-name').value=s.name;document.getElementById('e-tab').value=s.tab||'';document.getElementById('e-role').value=s.role;document.getElementById('e-stat').value=s.status;document.getElementById('edit-ttl').textContent=s.name;document.getElementById('edit-modal').classList.add('show')}
+function saveEdit(){const id=Number(document.getElementById('e-id').value);DB.upd('staff',id,{name:document.getElementById('e-name').value,tab:document.getElementById('e-tab').value||'—',role:document.getElementById('e-role').value,status:document.getElementById('e-stat').value});closeM('edit-modal');renderStaff();populateSelects();show('✓ Сохранено')}
+function renderStaff(){
+  const filt=document.getElementById('sf-filt').value
+  let people=stf();if(filt)people=people.filter(s=>s.role===filt)
+  document.getElementById('sf-cnt').textContent=`${stf().filter(s=>s.status==='Работает').length} работает · ${stf().filter(s=>s.excl).length} исключено`
+  document.getElementById('staff-grid').innerHTML=people.map(s=>`<div class="sc ${s.excl?'excl':''}"><div class="sc-name">${s.name}</div><div class="sc-role" style="color:${ROLE_COLORS[s.role]||'var(--muted)'}">${s.role}</div><div class="sc-tab">Таб.№ ${s.tab} · <span class="badge ${s.status==='Работает'?'bg':s.status==='Уволен'?'br':'ba'}" style="padding:1px 5px">${s.status}</span></div><div class="sc-acts"><div class="sca" onclick="openEdit(${s.id})">✏️</div><div class="sca ${s.excl?'sca-in':'sca-ex'}" onclick="toggleExcl(${s.id})">${s.excl?'Включить':'Исключить'}</div><div class="sca sca-rm" onclick="delStaff(${s.id})">Удалить</div></div></div>`).join('')||'<div style="color:var(--muted);font-size:12px;padding:20px;text-align:center;width:100%">Нет сотрудников</div>'
+  loadInstr()
+}
+
+// ══════════════════════════════════════════════
+// ТАБЕЛЬ (логика из sched_v2 — по ролям, с кликом)
+// ══════════════════════════════════════════════
+function getDates(from,to){const d=[],c=new Date(from),e=new Date(to);while(c<=e){d.push(c.toISOString().split('T')[0]);c.setDate(c.getDate()+1)}return d}
+
+function setPer(type,btn){
+  document.querySelectorAll('.pb').forEach(b=>b.classList.remove('on'));btn.classList.add('on')
+  document.getElementById('cust-period').style.display='none'
+  const now=new Date(),y=now.getFullYear(),m=now.getMonth()
+  if(type==='cur'){PER_FROM=`${y}-${String(m+1).padStart(2,'0')}-01`;PER_TO=`${y}-${String(m+1).padStart(2,'0')}-${new Date(y,m+1,0).getDate()}`}
+  else if(type==='next'){const nm=m===11?0:m+1,ny=m===11?y+1:y;PER_FROM=`${ny}-${String(nm+1).padStart(2,'0')}-01`;PER_TO=`${ny}-${String(nm+1).padStart(2,'0')}-${new Date(ny,nm+1,0).getDate()}`}
+  else{document.getElementById('cust-period').style.display='block';document.getElementById('per-from').value=PER_FROM;document.getElementById('per-to').value=PER_TO;return}
+}
+function applyCust(){PER_FROM=document.getElementById('per-from').value;PER_TO=document.getElementById('per-to').value;if(!PER_FROM||!PER_TO){show('Выбери даты');return}renderSched()}
+
+function renderSched(){
+  const from=PER_FROM,to=PER_TO;if(!from||!to){show('Выбери период');return}
+  const dates=getDates(from,to)
+  const rf=document.getElementById('role-filter').value
+  const sched=DB.get('schedule')
+  const norm=Number(document.getElementById('sched-norm').value)||13
+  const normHrs=norm*12
+  const ROLES=['Мастер горный','Машинист экскаватора','Машинист ДПА','Электромеханик']
+  let people=active();if(rf)people=people.filter(s=>s.role===rf)
+  document.getElementById('sched-ttl').textContent=`${fmt(from)} — ${fmt(to)} · ${dates.length} дн`
+  let html='<table class="sch-t"><thead><tr><th class="sch-name hh">Сотрудник</th>'
+  dates.forEach(d=>{const dd=new Date(d),wd=dd.getDay(),isWe=wd===0||wd===6,ns=['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];html+=`<th style="${isWe?'color:var(--purple)':''}">${dd.getDate()}<br><span style="font-size:8px">${ns[wd]}</span></th>`})
+  html+='<th>ч</th></tr></thead><tbody>'
+  const rg={};people.forEach(s=>{if(!rg[s.role])rg[s.role]=[];rg[s.role].push(s)})
+  const show_roles=rf?[rf]:ROLES.filter(r=>rg[r]&&rg[r].length)
+  show_roles.forEach(role=>{
+    html+=`<tr class="role-row"><td class="role-lbl" colspan="${dates.length+2}">▸ ${role} · ${(rg[role]||[]).length} чел</td></tr>`
+    ;(rg[role]||[]).forEach(s=>{
+      html+=`<tr style="${s.excl?'opacity:.55':''}"><td class="sch-name">${s.name}</td>`
+      let hrs=0
+      dates.forEach(d=>{
+        const isWe=new Date(d).getDay()===0||new Date(d).getDay()===6
+        const e=sched.find(x=>x.name===s.name&&x.date===d),v=e?e.type:''
+        let cls=isWe&&!v?'dwe':'dem'
+        if(v==='1'){cls='d1';hrs+=12}else if(v==='2'){cls='d2';hrs+=12}else if(v==='В')cls='dv';else if(v==='Б')cls='db';else if(v==='О')cls='do'
+        html+=`<td class="${cls}" onclick="cycleCell('${s.name}','${d}')">${v}</td>`
+      })
+      const hcls=hrs>=normHrs?'hrs-ok':hrs>=normHrs*0.8?'hrs-near':hrs>0?'hrs-low':''
+      html+=`<td class="${hcls}" style="${hrs>=normHrs?'color:var(--green);font-weight:700':hrs>=normHrs*0.8?'color:var(--amber);font-weight:700':hrs>0?'color:var(--red)':''}">${hrs}</td></tr>`
+    })
+  })
+  html+='</tbody></table>'
+  document.getElementById('sched-grid').innerHTML=html
+  // Итоги
+  const sum=people.map(s=>{
+    const e=DB.get('schedule').filter(x=>x.name===s.name&&dates.includes(x.date))
+    const s1=e.filter(x=>x.type==='1').length,s2=e.filter(x=>x.type==='2').length
+    const hrs=(s1+s2)*12,col=hrs>=normHrs?'var(--green)':hrs>=normHrs*0.8?'var(--amber)':hrs>0?'var(--red)':'var(--muted)'
+    const sta=hrs>=normHrs?'<span class="badge bg">✓ Норма</span>':hrs>0?`<span class="badge ba">-${normHrs-hrs}ч</span>`:'<span class="badge br">0</span>'
+    return s1+s2+e.filter(x=>['Б','О'].includes(x.type)).length>0?`<tr><td style="font-weight:600">${s.name}</td><td style="color:${ROLE_COLORS[s.role]||'var(--muted)'}">${s.role}</td><td>${s1}</td><td>${s2}</td><td>${e.filter(x=>x.type==='Б').length||'—'}</td><td>${e.filter(x=>x.type==='О').length||'—'}</td><td style="color:${col};font-weight:700">${hrs}</td><td style="color:var(--muted)">${normHrs}</td><td>${sta}</td></tr>`:''
+  }).filter(Boolean).join('')
+  document.getElementById('sched-sum').innerHTML=sum||'<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:14px">Нет данных</td></tr>'
+}
+
+function cycleCell(name,date){
+  const cur=DB.get('schedule').find(s=>s.name===name&&s.date===date)
+  const cycle={'':'1','1':'2','2':'В','В':'Б','Б':'О','О':''}
+  const next=cycle[cur?cur.type:'']
+  const sc=DB.get('schedule').filter(s=>!(s.name===name&&s.date===date))
+  if(next)sc.push({name,date,type:next,id:Date.now()})
+  DB.set('schedule',sc);renderSched()
+}
+function applyRange(){
+  const name=document.getElementById('q-who').value,from=document.getElementById('q-from').value,to=document.getElementById('q-to').value,type=document.getElementById('q-type').value
+  if(!name||!from||!to){show('Заполни поля');return}
+  const dates=getDates(from,to);let sc=DB.get('schedule').filter(s=>!(s.name===name&&dates.includes(s.date)))
+  dates.forEach(d=>sc.push({name,date:d,type,id:Date.now()+Math.random()}))
+  DB.set('schedule',sc);renderSched();show(`✓ ${dates.length} дней — ${type}`)
+}
+function clearRange(){
+  const name=document.getElementById('q-who').value,from=document.getElementById('q-from').value,to=document.getElementById('q-to').value
+  if(!name||!from||!to)return;const dates=getDates(from,to)
+  DB.set('schedule',DB.get('schedule').filter(s=>!(s.name===name&&dates.includes(s.date))))
+  renderSched();show('✓ Снято')
+}
+function exportSchedCsv(){
+  const dates=getDates(PER_FROM,PER_TO),people=active(),sched=DB.get('schedule')
+  let csv='Сотрудник;Роль;'+dates.map(d=>fmt(d)).join(';')+';Часов\n'
+  people.forEach(s=>{let hrs=0;const v=dates.map(d=>{const e=sched.find(x=>x.name===s.name&&x.date===d);if(!e)return'';if(e.type==='1'||e.type==='2')hrs+=12;return e.type});csv+=`${s.name};${s.role};${v.join(';')};${hrs}\n`})
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`tabyl_${PER_FROM}_${PER_TO}.csv`;a.click();show('✓ Экспорт')
+}
+
+// ══════════════════════════════════════════════
+// АВТОГРАФИК (V9 логика — по ролям 1+2+2)
+// ══════════════════════════════════════════════
+function openAutoModal(){
+  document.getElementById('a-from').value=PER_FROM;document.getElementById('a-to').value=PER_TO
+  document.getElementById('a-staff-list').innerHTML=active().map(s=>`<div style="display:flex;align-items:center;gap:6px;padding:4px;border-bottom:1px solid var(--border)"><input type="checkbox" class="a-chk" value="${s.name}" data-role="${s.role}" ${!s.excl?'checked':''} style="cursor:pointer"><span style="flex:1;font-size:11px">${s.name}</span><span style="font-size:9px;color:${ROLE_COLORS[s.role]||'var(--muted)'}">${s.role.split(' ').pop()}</span></div>`).join('')
+  document.getElementById('auto-modal').classList.add('show')
+}
+function buildAuto(){
+  const from=document.getElementById('a-from').value,to=document.getElementById('a-to').value;if(!from||!to)return null
+  const nm=Number(document.getElementById('a-nm').value)||13,ne=Number(document.getElementById('a-ne').value)||10,nd=Number(document.getElementById('a-nd').value)||7
+  const sel=[...document.querySelectorAll('.a-chk:checked')].map(c=>({name:c.value,role:c.dataset.role}))
+  const ms=sel.filter(s=>s.role==='Мастер горный').map(s=>s.name)
+  const ex=sel.filter(s=>s.role==='Машинист экскаватора').map(s=>s.name)
+  const dp=sel.filter(s=>s.role==='Машинист ДПА').map(s=>s.name)
+  const dates=getDates(from,to),sched=DB.get('schedule')
+  const blocked={};[...ms,...ex,...dp].forEach(n=>{blocked[n]=sched.filter(s=>s.name===n&&dates.includes(s.date)&&(s.type==='О'||s.type==='Б')).map(s=>s.date)})
+  const cnt={};[...ms,...ex,...dp].forEach(n=>cnt[n]=0)
+  const normOf=n=>{const s=stf().find(x=>x.name===n);if(!s)return 13;if(s.role==='Мастер горный')return nm;if(s.role==='Машинист экскаватора')return ne;return nd}
+  const result=[];let mi=0,ei=0,di=0
+  dates.forEach(d=>{
+    ;['1','2'].forEach(shift=>{
+      const avM=ms.filter(n=>!(blocked[n]||[]).includes(d)&&cnt[n]<normOf(n))
+      if(avM.length){const m=avM[mi%avM.length];result.push({name:m,date:d,type:shift});cnt[m]++;mi++}
+      const avE=ex.filter(n=>!(blocked[n]||[]).includes(d)&&cnt[n]<normOf(n));const usedE=new Set()
+      for(let i=0;i<2;i++){if(avE.length){const e=avE[(ei+i)%avE.length];if(!usedE.has(e)&&!result.find(r=>r.name===e&&r.date===d&&r.type===shift)){result.push({name:e,date:d,type:shift});cnt[e]++;usedE.add(e)}}}
+      ei+=2
+      const avD=dp.filter(n=>!(blocked[n]||[]).includes(d)&&cnt[n]<normOf(n));const usedD=new Set()
+      for(let i=0;i<2;i++){if(avD.length){const dp2=avD[(di+i)%avD.length];if(!usedD.has(dp2)&&!result.find(r=>r.name===dp2&&r.date===d&&r.type===shift)){result.push({name:dp2,date:d,type:shift});cnt[dp2]++;usedD.add(dp2)}}}
+      di+=2
+    })
+  })
+  return{result,cnt,ms,ex,dp,nm,ne,nd}
+}
+function previewAuto(){const r=buildAuto();if(!r)return;document.getElementById('a-preview').innerHTML=[r.ms.length?`Мастера (${r.nm}): `+r.ms.map(n=>`${n.split(' ')[0]} ${r.cnt[n]||0}`).join(' · '):null,r.ex.length?`Экскаватор (${r.ne}): `+r.ex.map(n=>`${n.split(' ')[0]} ${r.cnt[n]||0}`).join(' · '):null,r.dp.length?`ДПА (${r.nd}): `+r.dp.map(n=>`${n.split(' ')[0]} ${r.cnt[n]||0}`).join(' · '):null].filter(Boolean).join('<br>')}
+function applyAuto(){
+  const r=buildAuto();if(!r){show('Нет данных');return}
+  const from=document.getElementById('a-from').value,to=document.getElementById('a-to').value
+  const dates=getDates(from,to);let sc=DB.get('schedule').filter(s=>!dates.includes(s.date)||(s.type==='Б'||s.type==='О'))
+  r.result.forEach(x=>sc.push({...x,id:Date.now()+Math.random()}));DB.set('schedule',sc)
+  PER_FROM=from;PER_TO=to;closeM('auto-modal');renderSched();show(`✓ ${r.result.length} записей`)
+}
+
+// ══════════════════════════════════════════════
+// ЗАГРУЗКА ИЗ WHATSAPP
+// ══════════════════════════════════════════════
+function parseBulk(){
+  const text=document.getElementById('bulk-text').value,date=document.getElementById('bulk-date').value,shift=document.getElementById('bulk-shift').value
+  let cnt=0,prod={},pumps=[],ships=[]
+  text.split('\n').forEach(line=>{const l=line.trim()
+    const m10=l.match(/10[*x×]80[\s=:-]+(\d+)/i);if(m10){prod.s10=m10[1];cnt++}
+    const m25=l.match(/25[*x×]60[\s=:-]+(\d+)/i);if(m25){prod.s25=m25[1];cnt++}
+    const mot=l.match(/отс[ев]*[\s=:-]+([\d.]+)[\/\\]+([\d.]+)/i);if(mot){prod.ot1=mot[1];prod.ot2=mot[2]}
+    const mvkl=l.match(/насос.{0,20}(вкл|запуст).{0,15}(\d{1,2}[:.]\d{2})/i);if(mvkl){pumps.push({date,time:mvkl[2].replace('.',':'),vol:0});cnt++}
+    const motkl=l.match(/насос.{0,20}(откл|отключ).{0,15}(\d{1,2}[:.]\d{2})/i);if(motkl)cnt++
+    const ms2=l.match(/(?:отгрузк[аи]).{0,20}?([\d]+)\s*м[³3]/i);if(ms2){ships.push({date,frac:'10×80',vol:ms2[1],dest:'Разрез Богатырь',type:'Реализация',uch:'Западный',trans:'',note:''});cnt++}
+  })
+  const masterMap={'Хакимов':'Хакимов И.Р.','Кузьменко':'Кузьменко Д.В.','Дранов':'Дранов К.Н.','Бейсенов':'Бейсенов А.А-Р.','Булекбаев':'Булекбаев К.Ж.','Гулько':'Гулько А.А.','Ардак':'Бейсенов А.А-Р.','Константин':'Кузьменко Д.В.'}
+  let master=masters()[0]||''
+  Object.entries(masterMap).forEach(([k,v])=>{if(text.includes(k))master=v})
+  if(prod.s10||prod.s25)DB.push('production',{date,pdsu:'ПДСУ-200 №1',hrs:'12',s10:prod.s10||'0',s25:prod.s25||'0',ot1:prod.ot1||'',ot2:prod.ot2||'',kamR:'',kamC:'',vsk:'',excav:'3287, 3259',lines:'',master,notes:text.slice(0,200)})
+  ships.forEach(s=>DB.push('shipments',s))
+  document.getElementById('bulk-res').innerHTML=`<div style="background:rgba(61,184,122,.1);border:1px solid rgba(61,184,122,.3);border-radius:8px;padding:10px;font-size:12px;color:var(--green)">✓ 10×80=${prod.s10||'—'}м³ · отгрузок ${ships.length} · мастер: ${master}</div>`
+  show('✓ Загружено '+cnt+' значений')
+}
+
+// ══════════════════════════════════════════════
+// ОТЧЁТЫ (автогенерация по формам документов)
+// ══════════════════════════════════════════════
+function genReport(){
+  const t=document.getElementById('rep-date').value
+  const type=document.getElementById('rep-type').value
+  const y=t.slice(0,4),m=t.slice(5,7)
+  const mName=MONTHS[Number(m)-1]||''
+  const prods=DB.get('production').filter(p=>p.date&&p.date.startsWith(`${y}-${m}`))
+  const ships=DB.get('shipments').filter(s=>s.date&&s.date.startsWith(`${y}-${m}`))
+  const narad=DB.get('narads').filter(n=>n.date&&n.date.startsWith(`${y}-${m}`))
+  const waterRec=DB.get('water').filter(w=>w.date&&w.date.startsWith(`${y}-${m}`))
+  const sklads=DB.get('sklad').slice(-1)[0]
+  const equips=DB.get('equipment')
+
+  let r=''
+  if(type==='daily'){
+    const dayProds=DB.get('production').filter(p=>p.date===t)
+    const dayShips=DB.get('shipments').filter(s=>s.date===t)
+    const dayNarad=DB.get('narads').filter(n=>n.date===t)
+    const sched=DB.get('schedule')
+    const s1crew=active().filter(s=>sched.find(x=>x.name===s.name&&x.date===t&&x.type==='1'))
+    const s2crew=active().filter(s=>sched.find(x=>x.name===s.name&&x.date===t&&x.type==='2'))
+    r=`СУТОЧНЫЙ ОТЧЁТ О ДВИЖЕНИИ ОБЪЁМОВ ЩЕБНЯ\nУДПЩ №1 (разрез «Богатырь»)\nДата: ${fmt(t)}\n`
+    if(s1crew.length)r+=`\n1 смена: ${s1crew.map(s=>s.name).join(', ')}\n`
+    if(s2crew.length)r+=`2 смена: ${s2crew.map(s=>s.name).join(', ')}\n`
+    r+='\n'
+    dayNarad.forEach(n=>{r+=`${n.shift} смена (${n.master}):\nПлан: ${n.p10||0} м³ · Факт: ${n.f10||0} м³ · ${n.pct!=null?n.pct+'%':'—'}\n`;if(n.note)r+=`Причина: ${n.note}\n`;r+='\n'})
+    dayProds.forEach(p=>{r+=`${p.pdsu} отработала ${p.hrs||'—'} ч\n10×80 = ${p.s10||0} м³\n25×60 = ${p.s25||0} м³\nОтсев = ${p.ot1||'—'}/${p.ot2||'—'}\n`;if(p.excav)r+=`Экскаваторы: ${p.excav}\n`;if(p.notes)r+=`${p.notes}\n`;r+='\n'})
+    const totalShipDay=dayShips.reduce((a,s)=>a+Number(s.vol||0),0)
+    r+=totalShipDay?`Отгрузка: ${dayShips.map(s=>`${s.vol} м³ (${s.frac})`).join(', ')} = ${totalShipDay} м³\n`:'Отгрузок не было.\n'
+    if(sklads)r+=`\nОстаток щебня:\n10×80 = ${sklads.s10||0} м³\n25×60 = ${sklads.s25||0} м³\nОтсев = ${sklads.sot||0} м³\n`
+    r+=`\nНачальник УДПЩ №1 _______________ А. Ахметов\n`
+
+  } else if(type==='monthly'){
+    const totalKam=prods.reduce((a,p)=>a+Number(p.kamR||0)+Number(p.kamC||0),0)
+    const total10=prods.reduce((a,p)=>a+Number(p.s10||0),0)
+    const total25=prods.reduce((a,p)=>a+Number(p.s25||0),0)
+    const totalShip=ships.reduce((a,s)=>a+Number(s.vol||0),0)
+    const planTotal=narad.reduce((a,n)=>a+Number(n.p10||0),0)
+    r=`ТОО "Богатырь Комир" · Разрез "Богатырь"\nУДПЩ №1\n\nОТЧЁТ по добыче и реализации щебня\nза ${mName} ${y}г.\n\n`
+    if(sklads)r+=`Остаток на начало: 10×80=${sklads.s10||0} м³, 25×60=${sklads.s25||0} м³\n\n`
+    r+=`Переработано:\nКамень = ${totalKam} м³\n10×80 = ${total10} м³\n25×60 = ${total25} м³\n\nОтгружено: ${totalShip} м³\n`
+    if(planTotal>0){const fact=narad.reduce((a,n)=>a+Number(n.f10||0),0);r+=`\nВыполнение плана: ${fact}/${planTotal} м³ (${Math.round(fact/planTotal*100)}%)\n`}
+    r+=`\nНачальник УДПЩ №1 _______________ А. Ахметов`
+
+  } else if(type==='water'){
+    const totalVol=waterRec.reduce((a,w)=>a+Number(w.vol||0),0)
+    r=`СПРАВКА\nЗа ${mName} ${y} года из карьера участка по добыче\nи переработке щебня №1 выкачано\nв озеро Акбидаик ${totalVol} м³ карьерных вод.\n\nОтветственное лицо за водопользование на УДПЩ №1:\nНачальник УДПЩ №1 _______________ А. Ахметов`
+
+  } else if(type==='expected'){
+    const totalKam=prods.reduce((a,p)=>a+Number(p.kamR||0)+Number(p.kamC||0),0)
+    const total10=prods.reduce((a,p)=>a+Number(p.s10||0),0)
+    const planTotal=narad.reduce((a,n)=>a+Number(n.p10||0),0)
+    const missed=equips.filter(e=>e.stat==='В ремонте')
+    r=`Справка по ожидаемому выполнению плановых заданий УДПЩ №1\nза ${mName} ${y}г.\n`
+    if(planTotal>0&&total10>0){const diff=planTotal-total10;r+=`\nОжидаемое ${diff>0?'не':''}выполнение: ${diff>0?'-':''}${Math.abs(diff)} м³\n`}
+    if(missed.length){r+=`\nОсновные причины невыполнения:\n`;missed.forEach((e,i)=>{r+=`${i+1}. ${e.name}: простой ${e.hrs||'—'} ч, потери ${e.loss||'—'} м³\n   ${e.desc||''}\n`})}
+    r+=`\nНачальник УДПЩ №1 _______________ А. Ахметов`
+
+  } else if(type==='frac'){
+    const last10=prods.slice(-1)[0]
+    r=`${mName} ${y}г.\nОжидаемые остатки по фракциям:\n`
+    if(sklads){r+=`25×60 = ${sklads.s25||0} м³\n10×80 = ${sklads.s10||0} м³\nОтсев = ${sklads.sot||0} м³\n`}
+    const totalKam=prods.reduce((a,p)=>a+Number(p.kamR||0),0)
+    const totalVsk=prods.reduce((a,p)=>a+Number(p.vsk||0),0)
+    r+=`\nОжидаемое выполнение по камню: ${totalKam} м³\nОжидаемое выполнение по вскрыше: ${totalVsk} м³\n`
+    r+=`\nВ работе экскаваторы:\nЭКГ-4.6Б №3287 на погрузке камня.\nЭКГ-5А №3259 на погрузке вскрыши.`
+  }
+
+  document.getElementById('rep-text').textContent=r||'Нет данных для формирования отчёта'
+}
+function copyReport(){navigator.clipboard.writeText(document.getElementById('rep-text').textContent);show('✓ Скопировано')}
+
+// ══════════════════════════════════════════════
+// CORE AI
+// ══════════════════════════════════════════════
+function aiSend(){const inp=document.getElementById('ai-inp');const q=inp.value.trim();if(!q)return;inp.value='';aiProc(q)}
+function aiQ(q){aiProc(q)}
+function aiProc(q){
+  const chat=document.getElementById('ai-chat')
+  chat.innerHTML+=`<div style="color:var(--blue);margin-bottom:5px">Азамат: ${q}</div>`
+  const prods=DB.get('production'),ships=DB.get('shipments'),equips=DB.get('equipment'),ords=DB.get('orders'),narad=DB.get('narads'),sched=DB.get('schedule'),waterRec=DB.get('water'),sklads=DB.get('sklad')
+  const ql=q.toLowerCase();let a=''
+  const t=today()
+  if(ql.includes('остаток')||ql.includes('склад')){
+    const sk=sklads.slice(-1)[0]
+    a=sk?`Остатки на складе:<br>10×80: <b>${sk.s10||0} м³</b><br>25×60: <b>${sk.s25||0} м³</b><br>Отсев: <b>${sk.sot||0} м³</b>`:'Данных по остаткам нет.'
+  } else if(ql.includes('план')){
+    const tp=narad.reduce((a,n)=>a+Number(n.p10||0),0),tf=prods.reduce((a,p)=>a+Number(p.s10||0),0)
+    const pct=tp>0?Math.round(tf/tp*100):null
+    a=`Выполнение плана:<br>Нарядов: <b>${narad.length}</b><br>План: <b>${tp} м³</b> · Факт: <b>${tf} м³</b>${pct!=null?`<br><b style="color:${pct>=100?'var(--green)':pct>=80?'var(--amber)':'var(--red)'}">${pct}%</b>`:''}`
+  } else if(ql.includes('отгрузк')){
+    const total=ships.reduce((a,s)=>a+Number(s.vol||0),0)
+    const byFrac={}; ships.forEach(s=>{if(!byFrac[s.frac])byFrac[s.frac]=0;byFrac[s.frac]+=Number(s.vol||0)})
+    a=`Отгрузка итого: <b>${total} м³</b><br>`+Object.entries(byFrac).map(([f,v])=>`${f}: ${v} м³`).join('<br>')
+  } else if(ql.includes('смен')||ql.includes('сегодня')){
+    const s1=active().filter(s=>sched.find(x=>x.name===s.name&&x.date===t&&x.type==='1'))
+    const s2=active().filter(s=>sched.find(x=>x.name===s.name&&x.date===t&&x.type==='2'))
+    a=`Состав смен (${fmt(t)}):<br><b style="color:var(--green)">1 смена:</b> ${s1.length?s1.map(s=>s.name).join(', '):'нет данных'}<br><b style="color:var(--blue)">2 смена:</b> ${s2.length?s2.map(s=>s.name).join(', '):'нет данных'}`
+  } else if(ql.includes('ремонт')||ql.includes('авар')){
+    const r=equips.filter(e=>e.stat==='В ремонте')
+    const totalLoss=r.reduce((a,e)=>a+Number(e.loss||0),0)
+    a=r.length?`В ремонте: <b>${r.length}</b> единиц · Потери: <b>${totalLoss} м³</b><br>`+r.map(e=>`${e.name} → ${e.dest} [${e.pri}] ${e.hrs||'—'}ч`).join('<br>'):'Всё оборудование в работе.'
+  } else if(ql.includes('вод')){
+    const total=waterRec.reduce((a,w)=>a+Number(w.vol||0),0)
+    a=`Водоотлив: <b>${total} м³</b> откачано · Записей: ${waterRec.length}`
+  } else if(ql.includes('заявк')){
+    const o=ords.filter(o=>o.status==='Открыта')
+    a=o.length?`Открытых заявок: <b>${o.length}</b>:<br>`+o.map(o=>`${o.kind} — ${o.obj}`).join('<br>'):'Открытых заявок нет.'
+  } else if(ql.includes('сводк')||ql.includes('итог')||ql.includes('стату')){
+    const totalShip=ships.reduce((a,s)=>a+Number(s.vol||0),0),open=ords.filter(o=>o.status==='Открыта').length,rep=equips.filter(e=>e.stat==='В ремонте').length,totalWater=waterRec.reduce((a,w)=>a+Number(w.vol||0),0)
+    const sk=sklads.slice(-1)[0]
+    a=`УДПЩ №1 · Богатырь:<br>• Производство: <b>${prods.length} записей</b><br>• Нарядов: <b>${narad.length}</b><br>• Отгрузка: <b>${totalShip} м³</b><br>• Водоотлив: <b>${totalWater} м³</b><br>• Заявки: <b>${open}</b><br>• Ремонт: <b>${rep} единиц</b><br>• Персонал: <b>${active().length} чел</b>${sk?`<br>• Остаток 10×80: <b>${sk.s10||0} м³</b>`:''}`
+  } else {a=`Принял. В базе: производство ${prods.length}, отгрузки ${ships.length}, наряды ${narad.length}, водоотлив ${waterRec.length}. ∴`}
+  chat.innerHTML+=`<div style="margin-bottom:5px"><b style="color:var(--gold)">Core:</b> <span style="color:var(--text)">${a}</span></div>`
+  chat.scrollTop=chat.scrollHeight
+}
+
+// ══════════════════════════════════════════════
+// МОДАЛЫ
+// ══════════════════════════════════════════════
+function closeM(id){document.getElementById(id).classList.remove('show')}
+document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show')}))
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+initDB();initUI();loadDash()
+setInterval(()=>{
+  document.getElementById('htime').textContent=new Date().toLocaleDateString('ru',{weekday:'short',day:'numeric',month:'short'})
+  const total=Object.keys(localStorage).filter(k=>['production','shipments','pumps','narads','water','lzk','eco','mark','safety'].includes(k)).reduce((a,k)=>a+(DB.get(k)||[]).length,0)
+  document.getElementById('ftr').textContent=`∴ Core | УДПЩ №1 · Богатырь | ${new Date().toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'})} | ${total} записей | ${active().length} чел`
+},15000)
+</script>
+</body>
+</html>
